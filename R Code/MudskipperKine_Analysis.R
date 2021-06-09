@@ -260,14 +260,35 @@ pb_AbdAdd_Combined$species <- "pb"
 pb_ProRet <- rep(NA, length(kinFiles_pb))
 for (i in 1:length(kinFiles_pb)) {pb_ProRet[i] <- kinFiles_pb[[i]]["FemTVAng"]}
 pb_ProRet_Combined <- as.data.frame(do.call("rbind", pb_ProRet))
+
 names(pb_ProRet_Combined) <- percentStance
 pb_ProRet_Combined$filename <- unlist(pb_kin_trial)
 pb_ProRet_Combined$appendage <- unlist(pb_kin_group)
 pb_ProRet_Combined$species <- "pb"
 
-## pb - Protaction / Retraction angle - corrected by 90 degrees
-pb_ProRet_Combined_Corr <- pb_ProRet_Combined
-pb_ProRet_Combined_Corr[,1:101] <- pb_ProRet_Combined[,1:101]-90
+
+## pb - Protraction / Retraction correction
+#some values of pb_ProRet_Combined seem to have spontaneously changed sign 
+#so I changed those values back to normal. I also subtracted 90 degrees
+#to change 0 degrees to being perpendicular to the torso, which we were already doing
+
+pb_ProRet_Combined_fixed <- pb_ProRet_Combined
+
+for(i in 1:101){
+  pb_ProRet_Combined_fixed[3,i]  <- pb_ProRet_Combined_fixed[3,i]*-1
+  pb_ProRet_Combined_fixed[7,i]  <- pb_ProRet_Combined_fixed[7,i]*-1
+  pb_ProRet_Combined_fixed[9,i]  <- pb_ProRet_Combined_fixed[9,i]*-1
+  pb_ProRet_Combined_fixed[12,i] <- pb_ProRet_Combined_fixed[12,i]*-1
+}
+
+pb_ProRet_Combined_fixed[18,72:81]  <- pb_ProRet_Combined_fixed[18,72:81]*-1
+pb_ProRet_Combined_fixed[18,84:86]  <- pb_ProRet_Combined_fixed[18,84:86]*-1
+pb_ProRet_Combined_fixed[18,89:100] <- pb_ProRet_Combined_fixed[18,89:100]*-1
+pb_ProRet_Combined_fixed[21,45:101] <- pb_ProRet_Combined_fixed[21,45:101]*-1
+pb_ProRet_Combined_fixed[25,68:101] <- pb_ProRet_Combined_fixed[25,68:101]*-1
+pb_ProRet_Combined_fixed[40,70:101] <- pb_ProRet_Combined_fixed[40,70:101]*-1
+
+pb_ProRet_Combined_fixed[,1:101] <- pb_ProRet_Combined_fixed[,1:101]-90
 
 
 ## pb - Knee / Elbow angle 
@@ -438,9 +459,9 @@ at_pel_ProRet_Combined$appendage <- unlist(at_pel_kin_group)
 at_pel_ProRet_Combined$species <- "at"
 
 ## at_pel - Protaction / Retraction angle - corrected by 90 degrees
-at_pel_ProRet_Combined_Corr <- at_pel_ProRet_Combined
-at_pel_ProRet_Combined_Corr[,1:101] <- at_pel_ProRet_Combined[,1:101]-90
-
+at_pel_ProRet_Combined_fixed<- at_pel_ProRet_Combined
+at_pel_ProRet_Combined_fixed[,1:101] <- at_pel_ProRet_Combined[,1:101]-90
+at_pel_ProRet_Combined_fixed <- at_pel_ProRet_Combined_fixed[-c(7,48),]
 
 ## at_pel - Knee / Elbow angle 
 at_pel_KneeAng <- rep(NA, length(kinFiles_at_pel))
@@ -501,8 +522,8 @@ pb_ProRet_Mean_SE$type <- "pec"
 pb_ProRet_Mean_SE$species <- "pb"
 
 ##  pb - ProRet - corrected
-pb_ProRet_Corr_Mean  <- sapply(pb_ProRet_Combined_Corr[,c(1:101)], FUN=function(x) mean(x, na.rm=TRUE))
-pb_ProRet_Corr_SE  <- sapply(pb_ProRet_Combined_Corr[,c(1:101)], FUN=function(x) se(x, na.rm=TRUE))
+pb_ProRet_Corr_Mean  <- sapply(pb_ProRet_Combined_fixed[,c(1:101)], FUN=function(x) mean(x, na.rm=TRUE))
+pb_ProRet_Corr_SE  <- sapply(pb_ProRet_Combined_fixed[,c(1:101)], FUN=function(x) se(x, na.rm=TRUE))
 pb_ProRet_Corr_Mean_SE <- data.frame(pb_ProRet_Corr_Mean[Stance5], pb_ProRet_Corr_SE[Stance5], seq(0,100,5))
 names(pb_ProRet_Corr_Mean_SE) <- c("mean", "SE", "stance")
 pb_ProRet_Corr_Mean_SE$type <- "pec"
@@ -620,8 +641,8 @@ at_pel_ProRet_Mean_SE$type <- "pel"
 at_pel_ProRet_Mean_SE$species <- "at"
 
 ##  at_pel - ProRet - corrected
-at_pel_ProRet_Corr_Mean  <- sapply(at_pel_ProRet_Combined_Corr[,c(1:101)], FUN=function(x) mean(x, na.rm=TRUE))
-at_pel_ProRet_Corr_SE  <- sapply(at_pel_ProRet_Combined_Corr[,c(1:101)], FUN=function(x) se(x, na.rm=TRUE))
+at_pel_ProRet_Corr_Mean  <- sapply(at_pel_ProRet_Combined_fixed[,c(1:101)], FUN=function(x) mean(x, na.rm=TRUE))
+at_pel_ProRet_Corr_SE  <- sapply(at_pel_ProRet_Combined_fixed[,c(1:101)], FUN=function(x) se(x, na.rm=TRUE))
 at_pel_ProRet_Corr_Mean_SE <- data.frame(at_pel_ProRet_Corr_Mean[Stance5], at_pel_ProRet_Corr_SE[Stance5], seq(0,100,5))
 names(at_pel_ProRet_Corr_Mean_SE) <- c("mean", "SE", "stance")
 at_pel_ProRet_Corr_Mean_SE$type <- "pel"
@@ -1287,11 +1308,11 @@ lmer_calc <- function(appendage1, appendage2, fixedEffect = "species") {
 ####LMER CALCULATIONS####
 
 pbVars      <- list(pb_AbdAdd_Combined, pb_AnkAng_Combined, pb_KneeAng_Combined, pb_Pitch_Combined, 
-                    pb_ProRet_Combined_Corr, pb_Yaw_Combined)
+                    pb_ProRet_Combined_fixed, pb_Yaw_Combined)
 at_pec_Vars <- list(at_pec_AbdAdd_Combined, at_pec_AnkAng_Combined, at_pec_KneeAng_Combined, 
                     at_pec_Pitch_Combined, at_pec_ProRet_Combined_Corr, at_pec_Yaw_Combined)
 at_pel_Vars <- list(at_pel_AbdAdd_Combined, at_pel_AnkAng_Combined, at_pel_KneeAng_Combined, 
-                    at_pel_Pitch_Combined, at_pel_ProRet_Combined_Corr, at_pel_Yaw_Combined)
+                    at_pel_Pitch_Combined, at_pel_ProRet_Combined_fixed, at_pel_Yaw_Combined)
 
 pb_atpec_lmers <- matrix(NA,5, length(pbVars))
 pb_atpel_lmer <- matrix(NA,5, length(pbVars))
@@ -1336,35 +1357,6 @@ if(any(at_pecpel_Singular)){
   print(at_pecpel_Singular)
 } else{at_pecpel_Singular <- NULL}
 
-####Protraction/Retraction Troubleshooting####
-#there seem to be quite a few issues with pb_ProRet_Combined 
-#(including the corrected version) I only changed the signs of values, and it was
-#definitely a conversion error of some sort. I also subtracted 90 degrees, which
-#is what we did for pb_ProRet_Combined
-
-fixProRet <- pb_ProRet_Combined
-
-for(i in 1:101){
-  fixProRet[3,i] <- fixProRet[3,i]*-1
-  fixProRet[7,i] <- fixProRet[7,i]*-1
-  fixProRet[9,i] <- fixProRet[9,i]*-1
-  fixProRet[12,i] <- fixProRet[12,i]*-1
-}
-
-fixProRet[18,72:81] <- fixProRet[18,72:81]*-1
-fixProRet[18,84:86] <- fixProRet[18,84:86]*-1
-fixProRet[18,89:100] <- fixProRet[18,89:100]*-1
-fixProRet[21,45:101] <- fixProRet[21,45:101]*-1
-fixProRet[25,68:101] <- fixProRet[25,68:101]*-1
-fixProRet[40,70:101] <- fixProRet[40,70:101]*-1
-
-for(k in 1:50){
-  for(i in 1:101){
-    fixProRet[k,i] <- fixProRet[k,i]-90
-  }
-}
-
-fixAtPelProRet <- at_pel_ProRet_Combined_Corr[-c(7,48),]
 
 #### UNUSED CODE ####
 
