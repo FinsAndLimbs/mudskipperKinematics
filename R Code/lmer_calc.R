@@ -16,6 +16,7 @@
 ##                 commented out until the issue is fixed
 ##               2)Update function description to include fixedEffect argument
 
+## Load library
 library(lme4)
 
 lmer_calc <- function(appendage1, appendage2, fixedEffect = "species") {
