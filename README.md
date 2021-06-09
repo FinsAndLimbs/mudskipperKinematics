@@ -21,3 +21,6 @@ Videos were collected at Clemson University between 2010 - 2014 in partial fulfi
 1. Zach Quigley (The George Washington University)
 2. Rick Blob (Clemson University)
 3. Sandy Kawano (The George Washington University)
+
+
+**YAY!**
