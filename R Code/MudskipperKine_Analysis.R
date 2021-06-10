@@ -702,18 +702,17 @@ pec_Yaw_Plot <- ggplot(data=pec_Yaw_Mean_SE, aes(x=stance, y=mean, fill=species,
                         labels=c("A. tigrinum  ", "P. barbarus  "),
                         values=c("dashed", "solid"))+
   theme(axis.title.x=element_text(colour="black"))+ # vjust=0 puts a little more spacing btwn the axis text and label
-  theme(axis.title.y=element_text(colour='black'))+
-  theme(axis.text.x=element_text(colour='black'))+
-  theme(axis.text.y=element_text(colour='black'))+
+  theme(axis.title.y=element_text(colour='black', size = 15, vjust = -4, vjust = -5))+
+  theme(axis.text.x=element_text(colour='black', size = 15))+
+  theme(axis.text.y=element_text(colour='black', size = 15))+
   theme(panel.grid.minor=element_blank(), panel.grid.major=element_blank())+ # get rid of gridlines
   theme(panel.background=element_blank())+ # make background white
   theme(axis.line=element_line(colour="black", linetype="solid")) # put black lines for axes
   #theme(legend.position="bottom", legend.direction="horizontal")+
   #theme(plot.title=element_text(size=8))+
-  #annotate("text",  x=95, y = 160, label = "Abduction", size=3)+
-  #annotate("text", label = "Adduction", x = 95, y = -60, size=3)+
+  #annotate("text",  x=95, y = 160, label = "Abduction", size=4)+
+  #annotate("text", label = "Adduction", x = 95, y = -60, size=4)+
   #ggtitle("A \n") + theme(plot.title=element_text(hjust=0, size=15, face="bold"))
-
 
 ## Abduction / Adduction angle
 pec_AbdAdd_Mean_SE <- rbind(pb_AbdAdd_Mean_SE, at_pec_AbdAdd_Mean_SE)
@@ -736,16 +735,16 @@ pec_AbdAdd_Plot <- ggplot(data=pec_AbdAdd_Mean_SE, aes(x=stance, y=mean, fill=sp
                         labels=c("A. tigrinum  ", "P. barbarus  "),
                         values=c("dashed", "solid"))+
   theme(axis.title.x=element_text(colour="black"))+ # vjust=0 puts a little more spacing btwn the axis text and label
-  theme(axis.title.y=element_text(colour='black'))+
-  theme(axis.text.x=element_text(colour='black'))+
-  theme(axis.text.y=element_text(colour='black'))+
+  theme(axis.title.y=element_text(colour='black', size = 15, vjust = -4))+
+  theme(axis.text.x=element_text(colour='black', size = 15))+
+  theme(axis.text.y=element_text(colour='black', size = 15))+
   theme(panel.grid.minor=element_blank(), panel.grid.major=element_blank())+ # get rid of gridlines
   theme(panel.background=element_blank())+ # make background white
   theme(axis.line=element_line(colour="black", linetype="solid"))+ # put black lines for axes
   #theme(legend.position="bottom", legend.direction="horizontal")+
   #theme(plot.title=element_text(size=8))+
-  annotate("text",  x=95, y = 50, label = "Abduction", size=3)+
-  annotate("text", label = "Adduction", x = 95, y = -70, size=3)
+  annotate("text",  x=95, y = 50, label = "Abduction", size=4)+
+  annotate("text", label = "Adduction", x = 95, y = -70, size=4)
   #ggtitle("B\n") + theme(plot.title=element_text(hjust=0, size=15, face="bold"))
 
 
@@ -772,16 +771,16 @@ pec_ProRet_Corr_Plot <- ggplot(data=pec_ProRet_Corr_Mean_SE, aes(x=stance, y=mea
                         labels=c("A. tigrinum  ", "P. barbarus  "),
                         values=c("dashed", "solid"))+
   theme(axis.title.x=element_text(colour="black"))+ # vjust=0 puts a little more spacing btwn the axis text and label
-  theme(axis.title.y=element_text(colour='black'))+
-  theme(axis.text.x=element_text(colour='black'))+
-  theme(axis.text.y=element_text(colour='black'))+
+  theme(axis.title.y=element_text(colour='black', size = 15, vjust = -4))+
+  theme(axis.text.x=element_text(colour='black', size = 15))+
+  theme(axis.text.y=element_text(colour='black', size = 15))+
   theme(panel.grid.minor=element_blank(), panel.grid.major=element_blank())+ # get rid of gridlines
   theme(panel.background=element_blank())+ # make background white
   theme(axis.line=element_line(colour="black", linetype="solid"))+ # put black lines for axes
   #theme(legend.position="bottom", legend.direction="horizontal")+
   #theme(plot.title=element_text(size=8))+
-  annotate("text",  x=95, y = 20, label = "Protraction", size=3)+
-  annotate("text", label = "Retraction", x = 95, y = -60, size=3)
+  annotate("text",  x=95, y = 20, label = "Protraction", size=4)+
+  annotate("text", label = "Retraction", x = 95, y = -60, size=4)
  # ggtitle("C\n") + theme(plot.title=element_text(hjust=0, size=15, face="bold"))
 
 
@@ -807,16 +806,16 @@ pec_KneeAng_Plot <- ggplot(data=pec_KneeAng_Mean_SE, aes(x=stance, y=mean, fill=
                         labels=c("A. tigrinum  ", "P. barbarus  "),
                         values=c("dashed", "solid"))+
   theme(axis.title.x=element_text(colour="black"))+ # vjust=0 puts a little more spacing btwn the axis text and label
-  theme(axis.title.y=element_text(colour='black'))+
-  theme(axis.text.x=element_text(colour='black'))+
-  theme(axis.text.y=element_text(colour='black'))+
+  theme(axis.title.y=element_text(colour='black', size = 15, vjust = -4))+
+  theme(axis.text.x=element_text(colour='black', size = 15))+
+  theme(axis.text.y=element_text(colour='black', size = 15))+
   theme(panel.grid.minor=element_blank(), panel.grid.major=element_blank())+ # get rid of gridlines
   theme(panel.background=element_blank())+ # make background white
   theme(axis.line=element_line(colour="black", linetype="solid"))+ # put black lines for axes
   #theme(legend.position="bottom", legend.direction="horizontal")+
   #theme(plot.title=element_text(size=8))+
-  annotate("text",  x=95, y = 160, label = "Extension", size=3)+
-  annotate("text", label = "Flexion", x = 95, y = 60, size=3)
+  annotate("text",  x=95, y = 160, label = "Extension", size=4)+
+  annotate("text", label = "Flexion", x = 95, y = 60, size=4)
   #ggtitle("D\n") + theme(plot.title=element_text(hjust=0, size=15, face="bold"))
 
 
@@ -841,16 +840,16 @@ pec_AnkAng_Plot <- ggplot(data=pec_AnkAng_Mean_SE, aes(x=stance, y=mean, fill=sp
                         labels=c("A. tigrinum  ", "P. barbarus  "),
                         values=c("dashed", "solid"))+
   theme(axis.title.x=element_text(colour="black"))+ # vjust=0 puts a little more spacing btwn the axis text and label
-  theme(axis.title.y=element_text(colour='black'))+
-  theme(axis.text.x=element_text(colour='black'))+
-  theme(axis.text.y=element_text(colour='black'))+
+  theme(axis.title.y=element_text(colour='black', size = 15, vjust = -4))+
+  theme(axis.text.x=element_text(colour='black', size = 15))+
+  theme(axis.text.y=element_text(colour='black', size = 15))+
   theme(panel.grid.minor=element_blank(), panel.grid.major=element_blank())+ # get rid of gridlines
   theme(panel.background=element_blank())+ # make background white
   theme(axis.line=element_line(colour="black", linetype="solid"))+ # put black lines for axes
   #theme(legend.position="bottom", legend.direction="horizontal")+
   #theme(plot.title=element_text(size=8))+
-  annotate("text",  x=95, y = 165, label = "Extension", size=3)+
-  annotate("text", label = "Flexion", x = 95, y = 100, size=3)
+  annotate("text",  x=95, y = 165, label = "Extension", size=4)+
+  annotate("text", label = "Flexion", x = 95, y = 100, size=4)
   #ggtitle("E\n") + theme(plot.title=element_text(hjust=0, size=15, face="bold"))
 
 
@@ -875,16 +874,16 @@ pec_Pitch_Plot <- ggplot(data=pec_Pitch_Mean_SE, aes(x=stance, y=mean, fill=spec
                         labels=c("A. tigrinum  ", "P. barbarus  "),
                         values=c("dashed", "solid"))+
   theme(axis.title.x=element_text(colour="black"))+ # vjust=0 puts a little more spacing btwn the axis text and label
-  theme(axis.title.y=element_text(colour='black'))+
-  theme(axis.text.x=element_text(colour='black'))+
-  theme(axis.text.y=element_text(colour='black'))+
+  theme(axis.title.y=element_text(colour='black', size = 15, vjust = -4))+
+  theme(axis.text.x=element_text(colour='black', size = 15))+
+  theme(axis.text.y=element_text(colour='black', size = 15))+
   theme(panel.grid.minor=element_blank(), panel.grid.major=element_blank())+ # get rid of gridlines
   theme(panel.background=element_blank())+ # make background white
   theme(axis.line=element_line(colour="black", linetype="solid")) # put black lines for axes
   #theme(legend.position="bottom", legend.direction="horizontal")+
   #theme(plot.title=element_text(size=8))+
-  #annotate("text",  x=95, y = 160, label = "Positive", size=3)+
-  #annotate("text", label = "Negative", x = 95, y = 60, size=3)+
+  #annotate("text",  x=95, y = 160, label = "Positive", size=4)+
+  #annotate("text", label = "Negative", x = 95, y = 60, size=4)+
   #ggtitle("F\n") + theme(plot.title=element_text(hjust=0, size=15, face="bold"))
 
 
@@ -914,16 +913,14 @@ propulsor_Yaw_Plot <- ggplot(data=propulsor_Yaw_Mean_SE, aes(x=stance, y=mean, f
                         labels=c("A. tigrinum  ", "P. barbarus  "),
                         values=c("dashed", "solid"))+
   theme(axis.title.x=element_text(colour="black"))+ # vjust=0 puts a little more spacing btwn the axis text and label
-  theme(axis.title.y=element_text(colour='black'))+
-  theme(axis.text.x=element_text(colour='black'))+
-  theme(axis.text.y=element_text(colour='black'))+
+  theme(axis.title.y=element_text(colour='black', size = 15, vjust = -4))+
+  theme(axis.text.x=element_text(colour='black', size = 15))+
+  theme(axis.text.y=element_text(colour='black', size = 15))+
   theme(panel.grid.minor=element_blank(), panel.grid.major=element_blank())+ # get rid of gridlines
   theme(panel.background=element_blank())+ # make background white
   theme(axis.line=element_line(colour="black", linetype="solid")) # put black lines for axes
   #theme(legend.position="bottom", legend.direction="horizontal")+
   #theme(plot.title=element_text(size=8))+
-  #annotate("text",  x=95, y = 160, label = "Abduction", size=3)+
-  #annotate("text", label = "Adduction", x = 95, y = -60, size=3)+
   #ggtitle("A \n") + theme(plot.title=element_text(hjust=0, size=15, face="bold"))
 
 
@@ -950,16 +947,16 @@ propulsor_AbdAdd_Plot <- ggplot(data=propulsor_AbdAdd_Mean_SE, aes(x=stance, y=m
                         labels=c("A. tigrinum  ", "P. barbarus  "),
                         values=c("dashed", "solid"))+
   theme(axis.title.x=element_text(colour="black"))+ # vjust=0 puts a little more spacing btwn the axis text and label
-  theme(axis.title.y=element_text(colour='black'))+
-  theme(axis.text.x=element_text(colour='black'))+
-  theme(axis.text.y=element_text(colour='black'))+
+  theme(axis.title.y=element_text(colour='black', size = 15, vjust = -4))+
+  theme(axis.text.x=element_text(colour='black', size = 15))+
+  theme(axis.text.y=element_text(colour='black', size = 15))+
   theme(panel.grid.minor=element_blank(), panel.grid.major=element_blank())+ # get rid of gridlines
   theme(panel.background=element_blank())+ # make background white
   theme(axis.line=element_line(colour="black", linetype="solid"))+ # put black lines for axes
   #theme(legend.position="bottom", legend.direction="horizontal")+
   #theme(plot.title=element_text(size=8))+
-  annotate("text",  x=95, y = 0, label = "Abduction", size=3)+
-  annotate("text", label = "Adduction", x = 95, y = -60, size=3)
+  annotate("text",  x=95, y = 0, label = "Abduction", size=4)+
+  annotate("text", label = "Adduction", x = 95, y = -60, size=4)
   #ggtitle("B\n") + theme(plot.title=element_text(hjust=0, size=15, face="bold"))
 
 
@@ -986,16 +983,16 @@ propulsor_ProRet_Corr_Plot <- ggplot(data=propulsor_ProRet_Corr_Mean_SE, aes(x=s
                         labels=c("A. tigrinum  ", "P. barbarus  "),
                         values=c("dashed", "solid"))+
   theme(axis.title.x=element_text(colour="black"))+ # vjust=0 puts a little more spacing btwn the axis text and label
-  theme(axis.title.y=element_text(colour='black'))+
-  theme(axis.text.x=element_text(colour='black'))+
-  theme(axis.text.y=element_text(colour='black'))+
+  theme(axis.title.y=element_text(colour='black', size = 15, vjust = -4))+
+  theme(axis.text.x=element_text(colour='black', size = 15))+
+  theme(axis.text.y=element_text(colour='black', size = 15))+
   theme(panel.grid.minor=element_blank(), panel.grid.major=element_blank())+ # get rid of gridlines
   theme(panel.background=element_blank())+ # make background white
   theme(axis.line=element_line(colour="black", linetype="solid"))+ # put black lines for axes
   #theme(legend.position="bottom", legend.direction="horizontal")+
   #theme(plot.title=element_text(size=8))+
-  annotate("text",  x=95, y = 40, label = "Protraction", size=3)+
-  annotate("text", label = "Retraction", x = 95, y = -60, size=3)
+  annotate("text",  x=95, y = 40, label = "Protraction", size=4)+
+  annotate("text", label = "Retraction", x = 95, y = -60, size=4)
   #ggtitle("C\n") + theme(plot.title=element_text(hjust=0, size=15, face="bold"))
 
 
@@ -1021,16 +1018,16 @@ propulsor_KneeAng_Plot <- ggplot(data=propulsor_KneeAng_Mean_SE, aes(x=stance, y
                         labels=c("A. tigrinum  ", "P. barbarus  "),
                         values=c("dashed", "solid"))+
   theme(axis.title.x=element_text(colour="black"))+ # vjust=0 puts a little more spacing btwn the axis text and label
-  theme(axis.title.y=element_text(colour='black'))+
-  theme(axis.text.x=element_text(colour='black'))+
-  theme(axis.text.y=element_text(colour='black'))+
+  theme(axis.title.y=element_text(colour='black', size = 15, vjust = -4))+
+  theme(axis.text.x=element_text(colour='black', size = 15))+
+  theme(axis.text.y=element_text(colour='black', size = 15))+
   theme(panel.grid.minor=element_blank(), panel.grid.major=element_blank())+ # get rid of gridlines
   theme(panel.background=element_blank())+ # make background white
   theme(axis.line=element_line(colour="black", linetype="solid"))+ # put black lines for axes
   #theme(legend.position="bottom", legend.direction="horizontal")+
   #theme(plot.title=element_text(size=8))+
-  annotate("text",  x=95, y = 160, label = "Extension", size=3)+
-  annotate("text", label = "Flexion", x = 95, y = 80, size=3)
+  annotate("text",  x=95, y = 160, label = "Extension", size=4)+
+  annotate("text", label = "Flexion", x = 95, y = 80, size=4)
   #ggtitle("D\n") + theme(plot.title=element_text(hjust=0, size=15, face="bold"))
 
 
@@ -1055,16 +1052,16 @@ propulsor_AnkAng_Plot <- ggplot(data=propulsor_AnkAng_Mean_SE, aes(x=stance, y=m
                         labels=c("A. tigrinum  ", "P. barbarus  "),
                         values=c("dashed", "solid"))+
   theme(axis.title.x=element_text(colour="black"))+ # vjust=0 puts a little more spacing btwn the axis text and label
-  theme(axis.title.y=element_text(colour='black'))+
-  theme(axis.text.x=element_text(colour='black'))+
-  theme(axis.text.y=element_text(colour='black'))+
+  theme(axis.title.y=element_text(colour='black', size = 15, vjust = -4))+
+  theme(axis.text.x=element_text(colour='black', size = 15))+
+  theme(axis.text.y=element_text(colour='black', size = 15))+
   theme(panel.grid.minor=element_blank(), panel.grid.major=element_blank())+ # get rid of gridlines
   theme(panel.background=element_blank())+ # make background white
   theme(axis.line=element_line(colour="black", linetype="solid"))+ # put black lines for axes
   #theme(legend.position="bottom", legend.direction="horizontal")+
   #theme(plot.title=element_text(size=8))+
-  annotate("text",  x=95, y = 165, label = "Extension", size=3)+
-  annotate("text", label = "Flexion", x = 95, y = 60, size=3)
+  annotate("text",  x=95, y = 165, label = "Extension", size=4)+
+  annotate("text", label = "Flexion", x = 95, y = 60, size=4)
   #ggtitle("E\n") + theme(plot.title=element_text(hjust=0, size=15, face="bold"))
 
 
@@ -1089,16 +1086,16 @@ propulsor_Pitch_Plot <- ggplot(data=propulsor_Pitch_Mean_SE, aes(x=stance, y=mea
                         labels=c("A. tigrinum  ", "P. barbarus  "),
                         values=c("dashed", "solid"))+
   theme(axis.title.x=element_text(colour="black"))+ # vjust=0 puts a little more spacing btwn the axis text and label
-  theme(axis.title.y=element_text(colour='black'))+
-  theme(axis.text.x=element_text(colour='black'))+
-  theme(axis.text.y=element_text(colour='black'))+
+  theme(axis.title.y=element_text(colour='black', size = 15, vjust = -4))+
+  theme(axis.text.x=element_text(colour='black', size = 15))+
+  theme(axis.text.y=element_text(colour='black', size = 15))+
   theme(panel.grid.minor=element_blank(), panel.grid.major=element_blank())+ # get rid of gridlines
   theme(panel.background=element_blank())+ # make background white
   theme(axis.line=element_line(colour="black", linetype="solid")) # put black lines for axes
   #theme(legend.position="bottom", legend.direction="horizontal")+
   #theme(plot.title=element_text(size=8))+
-  #annotate("text",  x=95, y = 160, label = "Positive", size=3)+
-  #annotate("text", label = "Negative", x = 95, y = 60, size=3)+
+  #annotate("text",  x=95, y = 160, label = "Positive", size=4)+
+  #annotate("text", label = "Negative", x = 95, y = 60, size=4)+
   #ggtitle("F\n") + theme(plot.title=element_text(hjust=0, size=15, face="bold"))
 
 
@@ -1128,16 +1125,16 @@ limb_Yaw_Plot <- ggplot(data=limb_Yaw_Mean_SE, aes(x=stance, y=mean, fill=type, 
                         labels=c("forelimb  ", "hind limb  "),
                         values=c("dashed", "solid"))+
   theme(axis.title.x=element_text(colour="black"))+ # vjust=0 puts a little more spacing btwn the axis text and label
-  theme(axis.title.y=element_text(colour='black'))+
-  theme(axis.text.x=element_text(colour='black'))+
-  theme(axis.text.y=element_text(colour='black'))+
+  theme(axis.title.y=element_text(colour='black', size = 15, vjust = -4))+
+  theme(axis.text.x=element_text(colour='black', size = 15))+
+  theme(axis.text.y=element_text(colour='black', size = 15))+
   theme(panel.grid.minor=element_blank(), panel.grid.major=element_blank())+ # get rid of gridlines
   theme(panel.background=element_blank())+ # make background white
   theme(axis.line=element_line(colour="black", linetype="solid")) # put black lines for axes
   #theme(legend.position="bottom", legend.direction="horizontal")+
   #theme(plot.title=element_text(size=8))+
-  #annotate("text",  x=95, y = 160, label = "Abduction", size=3)+
-  #annotate("text", label = "Adduction", x = 95, y = -60, size=3)+
+  #annotate("text",  x=95, y = 160, label = "Abduction", size=4)+
+  #annotate("text", label = "Adduction", x = 95, y = -60, size=4)+
   #ggtitle("A \n") + theme(plot.title=element_text(hjust=0, size=15, face="bold"))
 
 
@@ -1164,16 +1161,16 @@ limb_Pitch_Plot <- ggplot(data=limb_Pitch_Mean_SE, aes(x=stance, y=mean, fill=ty
                         labels=c("forelimb  ", "hind limb  "),
                         values=c("dashed", "solid"))+
   theme(axis.title.x=element_text(colour="black"))+ # vjust=0 puts a little more spacing btwn the axis text and label
-  theme(axis.title.y=element_text(colour='black'))+
-  theme(axis.text.x=element_text(colour='black'))+
-  theme(axis.text.y=element_text(colour='black'))+
+  theme(axis.title.y=element_text(colour='black', size = 15, vjust = -4))+
+  theme(axis.text.x=element_text(colour='black', size = 15))+
+  theme(axis.text.y=element_text(colour='black', size = 15))+
   theme(panel.grid.minor=element_blank(), panel.grid.major=element_blank())+ # get rid of gridlines
   theme(panel.background=element_blank())+ # make background white
   theme(axis.line=element_line(colour="black", linetype="solid")) # put black lines for axes
   #theme(legend.position="bottom", legend.direction="horizontal")+
   #theme(plot.title=element_text(size=8))+
-  #annotate("text",  x=95, y = 160, label = "Positive", size=3)+
-  #annotate("text", label = "Negative", x = 95, y = 60, size=3)+
+  #annotate("text",  x=95, y = 160, label = "Positive", size=4)+
+  #annotate("text", label = "Negative", x = 95, y = 60, size=4)+
   #ggtitle("F\n") + theme(plot.title=element_text(hjust=0, size=15, face="bold"))
 
 
@@ -1227,7 +1224,7 @@ propulsor_PlotCompare <- plot_grid(propulsor_AbdAdd_Plot + theme(legend.position
                              propulsor_Yaw_Plot + theme(legend.position="none"),
                              
                              #propulsor_legend,
-                             ncol = 2, align = "v",  labels = "AUTO",
+                             ncol = 2, align = "v",  labels = "AUTO", 
                              label_size = 12)
 
 
