@@ -1325,7 +1325,7 @@ at_pecpel_lmer <- matrix(NA,5, length(pbVars))
 
 for(i in 1:length(pbVars)){
   
-  pb_atpec_lmers[(5*i-4):(5*i)] <- lmer_calc(pbVars[i], at_pec_Vars[i], "species")
+  pb_atpec_lmer[(5*i-4):(5*i)] <- lmer_calc(pbVars[i], at_pec_Vars[i], "species")
   pb_atpel_lmer[(5*i-4):(5*i)] <- lmer_calc(pbVars[i], at_pel_Vars[i], "species")
   at_pecpel_lmer[(5*i-4):(5*i)] <- lmer_calc(pbVars[i], at_pel_Vars[i], "appendage")
 }
@@ -1336,9 +1336,9 @@ pb_atpel_Singular <- vector()
 at_pecpel_Singular <- vector()
 
 #Checks LMM results for singularity
-for(i in 1:length(pb_atpec_lmers)) {
+for(i in 1:length(pb_atpec_lmer)) {
   
-pb_atpec_Singular[i] <- isSingular(pb_atpec_lmers[[i]])
+pb_atpec_Singular[i] <- isSingular(pb_atpec_lmer[[i]])
 pb_atpel_Singular[i] <- isSingular(pb_atpel_lmer[[i]])
 at_pecpel_Singular[i] <- isSingular(at_pecpel_lmer[[i]])
 }
