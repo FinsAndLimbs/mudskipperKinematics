@@ -6,8 +6,7 @@
 
 ##TODO:
 ##1) @Zach Fix singularity issues with lmers (Especially Tmax/Tmin)
-##2) @Zach Clean up commented-out sections and see if unused code should be kept
-##3) @Zach Just leave in the joint angle stats section. Clean it up and make it 
+##2) @Zach Just leave in the joint angle stats section. Clean it up and make it 
 ##         pretty once the ms is written
 
 
@@ -274,12 +273,11 @@ pb_ProRet_Combined$species <- "pb"
 
 pb_ProRet_Combined_fixed <- pb_ProRet_Combined
 
-for(i in 1:101){
-  pb_ProRet_Combined_fixed[3,i]  <- pb_ProRet_Combined_fixed[3,i]*-1
-  pb_ProRet_Combined_fixed[7,i]  <- pb_ProRet_Combined_fixed[7,i]*-1
-  pb_ProRet_Combined_fixed[9,i]  <- pb_ProRet_Combined_fixed[9,i]*-1
-  pb_ProRet_Combined_fixed[12,i] <- pb_ProRet_Combined_fixed[12,i]*-1
-}
+pb_ProRet_Combined_fixed[3,1:101]  <- pb_ProRet_Combined_fixed[3,1:101]*-1
+pb_ProRet_Combined_fixed[7,1:101]  <- pb_ProRet_Combined_fixed[7,1:101]*-1
+pb_ProRet_Combined_fixed[9,1:101]  <- pb_ProRet_Combined_fixed[9,1:101]*-1
+pb_ProRet_Combined_fixed[12,1:101] <- pb_ProRet_Combined_fixed[12,1:101]*-1
+
 
 pb_ProRet_Combined_fixed[18,72:81]  <- pb_ProRet_Combined_fixed[18,72:81]*-1
 pb_ProRet_Combined_fixed[18,84:86]  <- pb_ProRet_Combined_fixed[18,84:86]*-1
@@ -318,6 +316,9 @@ names(pb_Pitch_Combined) <- percentStance
 pb_Pitch_Combined$filename <- unlist(pb_kin_trial)
 pb_Pitch_Combined$appendage <- unlist(pb_kin_group)
 pb_Pitch_Combined$species <- "pb"
+
+#Correct by 90 degrees to change how angles relate to body position
+pb_Pitch_Combined[,1:101] <- pb_Pitch_Combined[,1:101]-90
 
 
 #### STEP 5b: CALCULATE KINEMATIC DATA - At pec ####
@@ -403,6 +404,9 @@ names(at_pec_Pitch_Combined) <- percentStance
 at_pec_Pitch_Combined$filename <- unlist(at_pec_kin_trial)
 at_pec_Pitch_Combined$appendage <- unlist(at_pec_kin_group)
 at_pec_Pitch_Combined$species <- "at"
+
+#Correct by 90 degrees to change how angles relate to body position
+at_pec_Pitch_Combined[,1:101] <- at_pec_Pitch_Combined[,1:101]-90
 
 
 
@@ -492,6 +496,8 @@ at_pel_Pitch_Combined$filename <- unlist(at_pel_kin_trial)
 at_pel_Pitch_Combined$appendage <- unlist(at_pel_kin_group)
 at_pel_Pitch_Combined$species <- "at"
 
+#Correct by 90 degrees to change how angles relate to body position
+at_pel_Pitch_Combined[,1:101] <- at_pel_Pitch_Combined[,1:101]-90
 
 
 
@@ -687,7 +693,7 @@ pec_Yaw_MaxMin <- aes(ymax=pec_Yaw_Mean_SE$mean + pec_Yaw_Mean_SE$SE, ymin=pec_Y
 
 
 pec_Yaw_Plot <- ggplot(data=pec_Yaw_Mean_SE, aes(x=stance, y=mean, fill=species, linetype=species))+
-  scale_y_continuous("Yaw (degrees)\n")+
+  scale_y_continuous("\nYaw (degrees)")+
   #scale_x_continuous("\nStance (%)\n")+
   scale_x_continuous(element_blank())+
   geom_line(size=1, alpha=0.75)+
@@ -701,8 +707,10 @@ pec_Yaw_Plot <- ggplot(data=pec_Yaw_Mean_SE, aes(x=stance, y=mean, fill=species,
   scale_linetype_manual(name="species:", 
                         labels=c("A. tigrinum  ", "P. barbarus  "),
                         values=c("dashed", "solid"))+
+  theme(legend.title = element_text(size = 15))
+  theme(legend.text = element_text(size = 15))
   theme(axis.title.x=element_text(colour="black"))+ # vjust=0 puts a little more spacing btwn the axis text and label
-  theme(axis.title.y=element_text(colour='black', size = 15, vjust = -4, vjust = -5))+
+  theme(axis.title.y=element_text(colour='black', size = 15))+
   theme(axis.text.x=element_text(colour='black', size = 15))+
   theme(axis.text.y=element_text(colour='black', size = 15))+
   theme(panel.grid.minor=element_blank(), panel.grid.major=element_blank())+ # get rid of gridlines
@@ -720,7 +728,7 @@ pec_AbdAdd_MaxMin <- aes(ymax=pec_AbdAdd_Mean_SE$mean + pec_AbdAdd_Mean_SE$SE, y
 
 
 pec_AbdAdd_Plot <- ggplot(data=pec_AbdAdd_Mean_SE, aes(x=stance, y=mean, fill=species, linetype=species))+
-  scale_y_continuous("Abduct / Adduct (degrees)\n")+
+  scale_y_continuous("\nAbduct / Adduct (degrees)")+
   #scale_x_continuous("\nStance (%)\n")+
   scale_x_continuous(element_blank())+
   geom_line(size=1, alpha=0.75)+
@@ -735,7 +743,7 @@ pec_AbdAdd_Plot <- ggplot(data=pec_AbdAdd_Mean_SE, aes(x=stance, y=mean, fill=sp
                         labels=c("A. tigrinum  ", "P. barbarus  "),
                         values=c("dashed", "solid"))+
   theme(axis.title.x=element_text(colour="black"))+ # vjust=0 puts a little more spacing btwn the axis text and label
-  theme(axis.title.y=element_text(colour='black', size = 15, vjust = -4))+
+  theme(axis.title.y=element_text(colour='black', size = 15, vjust = 0.5))+
   theme(axis.text.x=element_text(colour='black', size = 15))+
   theme(axis.text.y=element_text(colour='black', size = 15))+
   theme(panel.grid.minor=element_blank(), panel.grid.major=element_blank())+ # get rid of gridlines
@@ -743,8 +751,8 @@ pec_AbdAdd_Plot <- ggplot(data=pec_AbdAdd_Mean_SE, aes(x=stance, y=mean, fill=sp
   theme(axis.line=element_line(colour="black", linetype="solid"))+ # put black lines for axes
   #theme(legend.position="bottom", legend.direction="horizontal")+
   #theme(plot.title=element_text(size=8))+
-  annotate("text",  x=95, y = 50, label = "Abduction", size=4)+
-  annotate("text", label = "Adduction", x = 95, y = -70, size=4)
+  annotate("text",  x=95, y = 50, label = "Abduction", size=5)+
+  annotate("text", label = "Adduction", x = 95, y = -70, size=5)
   #ggtitle("B\n") + theme(plot.title=element_text(hjust=0, size=15, face="bold"))
 
 
@@ -756,7 +764,7 @@ pec_ProRet_Corr_MaxMin <- aes(ymax=pec_ProRet_Corr_Mean_SE$mean + pec_ProRet_Cor
 
 
 pec_ProRet_Corr_Plot <- ggplot(data=pec_ProRet_Corr_Mean_SE, aes(x=stance, y=mean, fill=species, linetype=species))+
-  scale_y_continuous("Protract / Retract (degrees)\n")+
+  scale_y_continuous("\nProtract / Retract (degrees)")+
   #scale_x_continuous("\nStance (%)\n")+
   scale_x_continuous(element_blank())+
   geom_line(size=1, alpha=0.75)+
@@ -771,7 +779,7 @@ pec_ProRet_Corr_Plot <- ggplot(data=pec_ProRet_Corr_Mean_SE, aes(x=stance, y=mea
                         labels=c("A. tigrinum  ", "P. barbarus  "),
                         values=c("dashed", "solid"))+
   theme(axis.title.x=element_text(colour="black"))+ # vjust=0 puts a little more spacing btwn the axis text and label
-  theme(axis.title.y=element_text(colour='black', size = 15, vjust = -4))+
+  theme(axis.title.y=element_text(colour='black', size = 15, vjust = 0.5))+
   theme(axis.text.x=element_text(colour='black', size = 15))+
   theme(axis.text.y=element_text(colour='black', size = 15))+
   theme(panel.grid.minor=element_blank(), panel.grid.major=element_blank())+ # get rid of gridlines
@@ -779,8 +787,8 @@ pec_ProRet_Corr_Plot <- ggplot(data=pec_ProRet_Corr_Mean_SE, aes(x=stance, y=mea
   theme(axis.line=element_line(colour="black", linetype="solid"))+ # put black lines for axes
   #theme(legend.position="bottom", legend.direction="horizontal")+
   #theme(plot.title=element_text(size=8))+
-  annotate("text",  x=95, y = 20, label = "Protraction", size=4)+
-  annotate("text", label = "Retraction", x = 95, y = -60, size=4)
+  annotate("text",  x=95, y = 20, label = "Protraction", size=5)+
+  annotate("text", label = "Retraction", x = 95, y = -60, size=5)
  # ggtitle("C\n") + theme(plot.title=element_text(hjust=0, size=15, face="bold"))
 
 
@@ -791,7 +799,7 @@ pec_KneeAng_MaxMin <- aes(ymax=pec_KneeAng_Mean_SE$mean + pec_KneeAng_Mean_SE$SE
 
 
 pec_KneeAng_Plot <- ggplot(data=pec_KneeAng_Mean_SE, aes(x=stance, y=mean, fill=species, linetype=species))+
-  scale_y_continuous("Elbow angle (degrees)\n")+
+  scale_y_continuous("\nElbow angle (degrees)")+
   #scale_x_continuous("\nStance (%)\n")+
   scale_x_continuous(element_blank())+
   geom_line(size=1, alpha=0.75)+
@@ -806,7 +814,7 @@ pec_KneeAng_Plot <- ggplot(data=pec_KneeAng_Mean_SE, aes(x=stance, y=mean, fill=
                         labels=c("A. tigrinum  ", "P. barbarus  "),
                         values=c("dashed", "solid"))+
   theme(axis.title.x=element_text(colour="black"))+ # vjust=0 puts a little more spacing btwn the axis text and label
-  theme(axis.title.y=element_text(colour='black', size = 15, vjust = -4))+
+  theme(axis.title.y=element_text(colour='black', size = 15, vjust = 1.5))+
   theme(axis.text.x=element_text(colour='black', size = 15))+
   theme(axis.text.y=element_text(colour='black', size = 15))+
   theme(panel.grid.minor=element_blank(), panel.grid.major=element_blank())+ # get rid of gridlines
@@ -814,8 +822,8 @@ pec_KneeAng_Plot <- ggplot(data=pec_KneeAng_Mean_SE, aes(x=stance, y=mean, fill=
   theme(axis.line=element_line(colour="black", linetype="solid"))+ # put black lines for axes
   #theme(legend.position="bottom", legend.direction="horizontal")+
   #theme(plot.title=element_text(size=8))+
-  annotate("text",  x=95, y = 160, label = "Extension", size=4)+
-  annotate("text", label = "Flexion", x = 95, y = 60, size=4)
+  annotate("text",  x=95, y = 160, label = "Extension", size=5)+
+  annotate("text", label = "Flexion", x = 95, y = 60, size=5)
   #ggtitle("D\n") + theme(plot.title=element_text(hjust=0, size=15, face="bold"))
 
 
@@ -825,7 +833,7 @@ pec_AnkAng_MaxMin <- aes(ymax=pec_AnkAng_Mean_SE$mean + pec_AnkAng_Mean_SE$SE, y
 
 
 pec_AnkAng_Plot <- ggplot(data=pec_AnkAng_Mean_SE, aes(x=stance, y=mean, fill=species, linetype=species))+
-  scale_y_continuous("Wrist angle (degrees)\n")+
+  scale_y_continuous("\nWrist angle (degrees)")+
   #scale_x_continuous("\nStance (%)\n")+
   scale_x_continuous(element_blank())+
   geom_line(size=1, alpha=0.75)+
@@ -840,7 +848,7 @@ pec_AnkAng_Plot <- ggplot(data=pec_AnkAng_Mean_SE, aes(x=stance, y=mean, fill=sp
                         labels=c("A. tigrinum  ", "P. barbarus  "),
                         values=c("dashed", "solid"))+
   theme(axis.title.x=element_text(colour="black"))+ # vjust=0 puts a little more spacing btwn the axis text and label
-  theme(axis.title.y=element_text(colour='black', size = 15, vjust = -4))+
+  theme(axis.title.y=element_text(colour='black', size = 15, vjust = 1.5))+
   theme(axis.text.x=element_text(colour='black', size = 15))+
   theme(axis.text.y=element_text(colour='black', size = 15))+
   theme(panel.grid.minor=element_blank(), panel.grid.major=element_blank())+ # get rid of gridlines
@@ -848,8 +856,8 @@ pec_AnkAng_Plot <- ggplot(data=pec_AnkAng_Mean_SE, aes(x=stance, y=mean, fill=sp
   theme(axis.line=element_line(colour="black", linetype="solid"))+ # put black lines for axes
   #theme(legend.position="bottom", legend.direction="horizontal")+
   #theme(plot.title=element_text(size=8))+
-  annotate("text",  x=95, y = 165, label = "Extension", size=4)+
-  annotate("text", label = "Flexion", x = 95, y = 100, size=4)
+  annotate("text",  x=95, y = 165, label = "Extension", size=5)+
+  annotate("text", label = "Flexion", x = 95, y = 100, size=5)
   #ggtitle("E\n") + theme(plot.title=element_text(hjust=0, size=15, face="bold"))
 
 
@@ -859,7 +867,7 @@ pec_Pitch_MaxMin <- aes(ymax=pec_Pitch_Mean_SE$mean + pec_Pitch_Mean_SE$SE, ymin
 
 
 pec_Pitch_Plot <- ggplot(data=pec_Pitch_Mean_SE, aes(x=stance, y=mean, fill=species, linetype=species))+
-  scale_y_continuous("Pitch angle (degrees)\n")+
+  scale_y_continuous("\nPitch angle (degrees)")+
   #scale_x_continuous("\nStance (%)\n")+
   scale_x_continuous(element_blank())+
   geom_line(size=1, alpha=0.75)+
@@ -874,7 +882,7 @@ pec_Pitch_Plot <- ggplot(data=pec_Pitch_Mean_SE, aes(x=stance, y=mean, fill=spec
                         labels=c("A. tigrinum  ", "P. barbarus  "),
                         values=c("dashed", "solid"))+
   theme(axis.title.x=element_text(colour="black"))+ # vjust=0 puts a little more spacing btwn the axis text and label
-  theme(axis.title.y=element_text(colour='black', size = 15, vjust = -4))+
+  theme(axis.title.y=element_text(colour='black', size = 15))+
   theme(axis.text.x=element_text(colour='black', size = 15))+
   theme(axis.text.y=element_text(colour='black', size = 15))+
   theme(panel.grid.minor=element_blank(), panel.grid.major=element_blank())+ # get rid of gridlines
@@ -898,7 +906,7 @@ propulsor_Yaw_MaxMin <- aes(ymax=propulsor_Yaw_Mean_SE$mean + propulsor_Yaw_Mean
 
 
 propulsor_Yaw_Plot <- ggplot(data=propulsor_Yaw_Mean_SE, aes(x=stance, y=mean, fill=species, linetype=species))+
-  scale_y_continuous("Yaw (degrees)\n")+
+  scale_y_continuous("\nYaw (degrees)")+
   #scale_x_continuous("\nStance (%)\n")+
   scale_x_continuous(element_blank())+
   geom_line(size=1, alpha=0.75)+
@@ -913,7 +921,7 @@ propulsor_Yaw_Plot <- ggplot(data=propulsor_Yaw_Mean_SE, aes(x=stance, y=mean, f
                         labels=c("A. tigrinum  ", "P. barbarus  "),
                         values=c("dashed", "solid"))+
   theme(axis.title.x=element_text(colour="black"))+ # vjust=0 puts a little more spacing btwn the axis text and label
-  theme(axis.title.y=element_text(colour='black', size = 15, vjust = -4))+
+  theme(axis.title.y=element_text(colour='black', size = 15))+
   theme(axis.text.x=element_text(colour='black', size = 15))+
   theme(axis.text.y=element_text(colour='black', size = 15))+
   theme(panel.grid.minor=element_blank(), panel.grid.major=element_blank())+ # get rid of gridlines
@@ -932,7 +940,7 @@ propulsor_AbdAdd_MaxMin <- aes(ymax=propulsor_AbdAdd_Mean_SE$mean + propulsor_Ab
 
 
 propulsor_AbdAdd_Plot <- ggplot(data=propulsor_AbdAdd_Mean_SE, aes(x=stance, y=mean, fill=species, linetype=species))+
-  scale_y_continuous("Abduct / Adduct (degrees)\n")+
+  scale_y_continuous("\nAbduct / Adduct (degrees)")+
   #scale_x_continuous("\nStance (%)\n")+
   scale_x_continuous(element_blank())+
   geom_line(size=1, alpha=0.75)+
@@ -947,7 +955,7 @@ propulsor_AbdAdd_Plot <- ggplot(data=propulsor_AbdAdd_Mean_SE, aes(x=stance, y=m
                         labels=c("A. tigrinum  ", "P. barbarus  "),
                         values=c("dashed", "solid"))+
   theme(axis.title.x=element_text(colour="black"))+ # vjust=0 puts a little more spacing btwn the axis text and label
-  theme(axis.title.y=element_text(colour='black', size = 15, vjust = -4))+
+  theme(axis.title.y=element_text(colour='black', size = 15, vjust = 0.5))+
   theme(axis.text.x=element_text(colour='black', size = 15))+
   theme(axis.text.y=element_text(colour='black', size = 15))+
   theme(panel.grid.minor=element_blank(), panel.grid.major=element_blank())+ # get rid of gridlines
@@ -955,8 +963,8 @@ propulsor_AbdAdd_Plot <- ggplot(data=propulsor_AbdAdd_Mean_SE, aes(x=stance, y=m
   theme(axis.line=element_line(colour="black", linetype="solid"))+ # put black lines for axes
   #theme(legend.position="bottom", legend.direction="horizontal")+
   #theme(plot.title=element_text(size=8))+
-  annotate("text",  x=95, y = 0, label = "Abduction", size=4)+
-  annotate("text", label = "Adduction", x = 95, y = -60, size=4)
+  annotate("text",  x=95, y = 0, label = "Abduction", size=5)+
+  annotate("text", label = "Adduction", x = 95, y = -60, size=5)
   #ggtitle("B\n") + theme(plot.title=element_text(hjust=0, size=15, face="bold"))
 
 
@@ -968,7 +976,7 @@ propulsor_ProRet_Corr_MaxMin <- aes(ymax=propulsor_ProRet_Corr_Mean_SE$mean + pr
 
 
 propulsor_ProRet_Corr_Plot <- ggplot(data=propulsor_ProRet_Corr_Mean_SE, aes(x=stance, y=mean, fill=species, linetype=species))+
-  scale_y_continuous("Protract / Retract (degrees)\n")+
+  scale_y_continuous("\nProtract / Retract (degrees)")+
   #scale_x_continuous("\nStance (%)\n")+
   scale_x_continuous(element_blank())+
   geom_line(size=1, alpha=0.75)+
@@ -983,7 +991,7 @@ propulsor_ProRet_Corr_Plot <- ggplot(data=propulsor_ProRet_Corr_Mean_SE, aes(x=s
                         labels=c("A. tigrinum  ", "P. barbarus  "),
                         values=c("dashed", "solid"))+
   theme(axis.title.x=element_text(colour="black"))+ # vjust=0 puts a little more spacing btwn the axis text and label
-  theme(axis.title.y=element_text(colour='black', size = 15, vjust = -4))+
+  theme(axis.title.y=element_text(colour='black', size = 15, vjust = 0.5))+
   theme(axis.text.x=element_text(colour='black', size = 15))+
   theme(axis.text.y=element_text(colour='black', size = 15))+
   theme(panel.grid.minor=element_blank(), panel.grid.major=element_blank())+ # get rid of gridlines
@@ -991,8 +999,8 @@ propulsor_ProRet_Corr_Plot <- ggplot(data=propulsor_ProRet_Corr_Mean_SE, aes(x=s
   theme(axis.line=element_line(colour="black", linetype="solid"))+ # put black lines for axes
   #theme(legend.position="bottom", legend.direction="horizontal")+
   #theme(plot.title=element_text(size=8))+
-  annotate("text",  x=95, y = 40, label = "Protraction", size=4)+
-  annotate("text", label = "Retraction", x = 95, y = -60, size=4)
+  annotate("text",  x=95, y = 40, label = "Protraction", size=5)+
+  annotate("text", label = "Retraction", x = 95, y = -60, size=5)
   #ggtitle("C\n") + theme(plot.title=element_text(hjust=0, size=15, face="bold"))
 
 
@@ -1003,7 +1011,7 @@ propulsor_KneeAng_MaxMin <- aes(ymax=propulsor_KneeAng_Mean_SE$mean + propulsor_
 
 
 propulsor_KneeAng_Plot <- ggplot(data=propulsor_KneeAng_Mean_SE, aes(x=stance, y=mean, fill=species, linetype=species))+
-  scale_y_continuous("Knee angle (degrees)\n")+
+  scale_y_continuous("\nKnee angle (degrees)")+
   #scale_x_continuous("\nStance (%)\n")+
   scale_x_continuous(element_blank())+
   geom_line(size=1, alpha=0.75)+
@@ -1018,7 +1026,7 @@ propulsor_KneeAng_Plot <- ggplot(data=propulsor_KneeAng_Mean_SE, aes(x=stance, y
                         labels=c("A. tigrinum  ", "P. barbarus  "),
                         values=c("dashed", "solid"))+
   theme(axis.title.x=element_text(colour="black"))+ # vjust=0 puts a little more spacing btwn the axis text and label
-  theme(axis.title.y=element_text(colour='black', size = 15, vjust = -4))+
+  theme(axis.title.y=element_text(colour='black', size = 15, vjust = 1.5))+
   theme(axis.text.x=element_text(colour='black', size = 15))+
   theme(axis.text.y=element_text(colour='black', size = 15))+
   theme(panel.grid.minor=element_blank(), panel.grid.major=element_blank())+ # get rid of gridlines
@@ -1026,8 +1034,8 @@ propulsor_KneeAng_Plot <- ggplot(data=propulsor_KneeAng_Mean_SE, aes(x=stance, y
   theme(axis.line=element_line(colour="black", linetype="solid"))+ # put black lines for axes
   #theme(legend.position="bottom", legend.direction="horizontal")+
   #theme(plot.title=element_text(size=8))+
-  annotate("text",  x=95, y = 160, label = "Extension", size=4)+
-  annotate("text", label = "Flexion", x = 95, y = 80, size=4)
+  annotate("text",  x=95, y = 160, label = "Extension", size=5)+
+  annotate("text", label = "Flexion", x = 95, y = 80, size=5)
   #ggtitle("D\n") + theme(plot.title=element_text(hjust=0, size=15, face="bold"))
 
 
@@ -1037,7 +1045,7 @@ propulsor_AnkAng_MaxMin <- aes(ymax=propulsor_AnkAng_Mean_SE$mean + propulsor_An
 
 
 propulsor_AnkAng_Plot <- ggplot(data=propulsor_AnkAng_Mean_SE, aes(x=stance, y=mean, fill=species, linetype=species))+
-  scale_y_continuous("Ankle angle (degrees)\n")+
+  scale_y_continuous("\nAnkle angle (degrees)")+
   #scale_x_continuous("\nStance (%)\n")+
   scale_x_continuous(element_blank())+
   geom_line(size=1, alpha=0.75)+
@@ -1052,7 +1060,7 @@ propulsor_AnkAng_Plot <- ggplot(data=propulsor_AnkAng_Mean_SE, aes(x=stance, y=m
                         labels=c("A. tigrinum  ", "P. barbarus  "),
                         values=c("dashed", "solid"))+
   theme(axis.title.x=element_text(colour="black"))+ # vjust=0 puts a little more spacing btwn the axis text and label
-  theme(axis.title.y=element_text(colour='black', size = 15, vjust = -4))+
+  theme(axis.title.y=element_text(colour='black', size = 15, vjust = 1.5))+
   theme(axis.text.x=element_text(colour='black', size = 15))+
   theme(axis.text.y=element_text(colour='black', size = 15))+
   theme(panel.grid.minor=element_blank(), panel.grid.major=element_blank())+ # get rid of gridlines
@@ -1060,8 +1068,8 @@ propulsor_AnkAng_Plot <- ggplot(data=propulsor_AnkAng_Mean_SE, aes(x=stance, y=m
   theme(axis.line=element_line(colour="black", linetype="solid"))+ # put black lines for axes
   #theme(legend.position="bottom", legend.direction="horizontal")+
   #theme(plot.title=element_text(size=8))+
-  annotate("text",  x=95, y = 165, label = "Extension", size=4)+
-  annotate("text", label = "Flexion", x = 95, y = 60, size=4)
+  annotate("text",  x=95, y = 165, label = "Extension", size=5)+
+  annotate("text", label = "Flexion", x = 95, y = 60, size=5)
   #ggtitle("E\n") + theme(plot.title=element_text(hjust=0, size=15, face="bold"))
 
 
@@ -1071,7 +1079,7 @@ propulsor_Pitch_MaxMin <- aes(ymax=propulsor_Pitch_Mean_SE$mean + propulsor_Pitc
 
 
 propulsor_Pitch_Plot <- ggplot(data=propulsor_Pitch_Mean_SE, aes(x=stance, y=mean, fill=species, linetype=species))+
-  scale_y_continuous("Pitch angle (degrees)\n")+
+  scale_y_continuous("\nPitch angle (degrees)")+
   #scale_x_continuous("\nStance (%)\n")+
   scale_x_continuous(element_blank())+
   geom_line(size=1, alpha=0.75)+
@@ -1086,7 +1094,7 @@ propulsor_Pitch_Plot <- ggplot(data=propulsor_Pitch_Mean_SE, aes(x=stance, y=mea
                         labels=c("A. tigrinum  ", "P. barbarus  "),
                         values=c("dashed", "solid"))+
   theme(axis.title.x=element_text(colour="black"))+ # vjust=0 puts a little more spacing btwn the axis text and label
-  theme(axis.title.y=element_text(colour='black', size = 15, vjust = -4))+
+  theme(axis.title.y=element_text(colour='black', size = 15))+
   theme(axis.text.x=element_text(colour='black', size = 15))+
   theme(axis.text.y=element_text(colour='black', size = 15))+
   theme(panel.grid.minor=element_blank(), panel.grid.major=element_blank())+ # get rid of gridlines
@@ -1110,7 +1118,7 @@ limb_Yaw_MaxMin <- aes(ymax=limb_Yaw_Mean_SE$mean + limb_Yaw_Mean_SE$SE, ymin=li
 
 
 limb_Yaw_Plot <- ggplot(data=limb_Yaw_Mean_SE, aes(x=stance, y=mean, fill=type, linetype=type))+
-  scale_y_continuous("Yaw (degrees)\n")+
+  scale_y_continuous("\nYaw (degrees)")+
   #scale_x_continuous("\nStance (%)\n")+
   scale_x_continuous(element_blank())+
   geom_line(size=1, alpha=0.75)+
@@ -1125,7 +1133,7 @@ limb_Yaw_Plot <- ggplot(data=limb_Yaw_Mean_SE, aes(x=stance, y=mean, fill=type, 
                         labels=c("forelimb  ", "hind limb  "),
                         values=c("dashed", "solid"))+
   theme(axis.title.x=element_text(colour="black"))+ # vjust=0 puts a little more spacing btwn the axis text and label
-  theme(axis.title.y=element_text(colour='black', size = 15, vjust = -4))+
+  theme(axis.title.y=element_text(colour='black', size = 15))+
   theme(axis.text.x=element_text(colour='black', size = 15))+
   theme(axis.text.y=element_text(colour='black', size = 15))+
   theme(panel.grid.minor=element_blank(), panel.grid.major=element_blank())+ # get rid of gridlines
@@ -1146,7 +1154,7 @@ limb_Pitch_MaxMin <- aes(ymax=limb_Pitch_Mean_SE$mean + limb_Pitch_Mean_SE$SE, y
 
 
 limb_Pitch_Plot <- ggplot(data=limb_Pitch_Mean_SE, aes(x=stance, y=mean, fill=type, linetype=type))+
-  scale_y_continuous("Pitch angle (degrees)\n")+
+  scale_y_continuous("\nPitch angle (degrees)")+
   #scale_x_continuous("\nStance (%)\n")+
   scale_x_continuous(element_blank())+
   geom_line(size=1, alpha=0.75)+
@@ -1161,7 +1169,7 @@ limb_Pitch_Plot <- ggplot(data=limb_Pitch_Mean_SE, aes(x=stance, y=mean, fill=ty
                         labels=c("forelimb  ", "hind limb  "),
                         values=c("dashed", "solid"))+
   theme(axis.title.x=element_text(colour="black"))+ # vjust=0 puts a little more spacing btwn the axis text and label
-  theme(axis.title.y=element_text(colour='black', size = 15, vjust = -4))+
+  theme(axis.title.y=element_text(colour='black', size = 15))+
   theme(axis.text.x=element_text(colour='black', size = 15))+
   theme(axis.text.y=element_text(colour='black', size = 15))+
   theme(panel.grid.minor=element_blank(), panel.grid.major=element_blank())+ # get rid of gridlines
@@ -1196,7 +1204,7 @@ pec_PlotCompare <- plot_grid(pec_AbdAdd_Plot + theme(legend.position="none"),
           
           #pec_legend,
           ncol = 2, align = "v",  labels = "AUTO",
-          label_size = 12)
+          label_size = 20)
 
 
 # Add common x-axis label to plots
@@ -1225,7 +1233,7 @@ propulsor_PlotCompare <- plot_grid(propulsor_AbdAdd_Plot + theme(legend.position
                              
                              #propulsor_legend,
                              ncol = 2, align = "v",  labels = "AUTO", 
-                             label_size = 12)
+                             label_size = 20)
 
 
 # Add common x-axis label to plots
@@ -1311,7 +1319,7 @@ at_pec_Vars <- list(at_pec_AbdAdd_Combined, at_pec_AnkAng_Combined, at_pec_KneeA
 at_pel_Vars <- list(at_pel_AbdAdd_Combined, at_pel_AnkAng_Combined, at_pel_KneeAng_Combined, 
                     at_pel_Pitch_Combined, at_pel_ProRet_Combined_fixed, at_pel_Yaw_Combined)
 
-pb_atpec_lmers <- matrix(NA,5, length(pbVars))
+pb_atpec_lmer <- matrix(NA,5, length(pbVars))
 pb_atpel_lmer <- matrix(NA,5, length(pbVars))
 at_pecpel_lmer <- matrix(NA,5, length(pbVars))
 
