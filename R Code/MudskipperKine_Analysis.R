@@ -706,17 +706,18 @@ pec_Yaw_Plot <- ggplot(data=pec_Yaw_Mean_SE, aes(x=stance, y=mean, fill=species,
   scale_x_continuous(element_blank())+
   geom_line(size=1, alpha=0.75)+
   geom_ribbon(pec_Yaw_MaxMin, alpha=0.5)+
-  scale_colour_manual(name="species:", # changing legend title
+  scale_colour_manual(name="Species:", # changing legend title
                       labels=c("A. tigrinum  ", "P. barbarus  "), # Changing legend labels
                       values=c("ivory4", "ivory4"))+
-  scale_fill_manual(name="species:", 
+  scale_fill_manual(name="Species:", 
                     labels=c("A. tigrinum  ", "P. barbarus  "),
                     values=c("red","blue"))+
-  scale_linetype_manual(name="species:", 
+  scale_linetype_manual(name="Species:", 
                         labels=c("A. tigrinum  ", "P. barbarus  "),
                         values=c("dashed", "solid"))+
-  theme(legend.title = element_text(size = 15))
-  theme(legend.text = element_text(size = 15))
+  theme(legend.title = element_text(size = 15))+
+  theme(legend.title = element_text(face = "bold"))+
+  theme(legend.text = element_text(size = 15))+
   theme(axis.title.x=element_text(colour="black"))+ # vjust=0 puts a little more spacing btwn the axis text and label
   theme(axis.title.y=element_text(colour='black', size = 15))+
   theme(axis.text.x=element_text(colour='black', size = 15))+
@@ -741,13 +742,13 @@ pec_AbdAdd_Plot <- ggplot(data=pec_AbdAdd_Mean_SE, aes(x=stance, y=mean, fill=sp
   scale_x_continuous(element_blank())+
   geom_line(size=1, alpha=0.75)+
   geom_ribbon(pec_AbdAdd_MaxMin, alpha=0.5)+
-  scale_colour_manual(name="species:", # changing legend title
+  scale_colour_manual(name="Species:", # changing legend title
                       labels=c("A. tigrinum  ", "P. barbarus  "), # Changing legend labels
                       values=c("ivory4", "ivory4"))+
-  scale_fill_manual(name="species:", 
+  scale_fill_manual(name="Species:", 
                     labels=c("A. tigrinum  ", "P. barbarus  "),
                     values=c("red","blue"))+
-  scale_linetype_manual(name="species:", 
+  scale_linetype_manual(name="Species:", 
                         labels=c("A. tigrinum  ", "P. barbarus  "),
                         values=c("dashed", "solid"))+
   theme(axis.title.x=element_text(colour="black"))+ # vjust=0 puts a little more spacing btwn the axis text and label
@@ -777,13 +778,13 @@ pec_ProRet_Corr_Plot <- ggplot(data=pec_ProRet_Corr_Mean_SE, aes(x=stance, y=mea
   scale_x_continuous(element_blank())+
   geom_line(size=1, alpha=0.75)+
   geom_ribbon(pec_ProRet_Corr_MaxMin, alpha=0.5)+
-  scale_colour_manual(name="species:", # changing legend title
+  scale_colour_manual(name="Species:", # changing legend title
                       labels=c("A. tigrinum  ", "P. barbarus  "), # Changing legend labels
                       values=c("ivory4", "ivory4"))+
-  scale_fill_manual(name="species:", 
+  scale_fill_manual(name="Species:", 
                     labels=c("A. tigrinum  ", "P. barbarus  "),
                     values=c("red","blue"))+
-  scale_linetype_manual(name="species:", 
+  scale_linetype_manual(name="Species:", 
                         labels=c("A. tigrinum  ", "P. barbarus  "),
                         values=c("dashed", "solid"))+
   theme(axis.title.x=element_text(colour="black"))+ # vjust=0 puts a little more spacing btwn the axis text and label
@@ -812,13 +813,13 @@ pec_KneeAng_Plot <- ggplot(data=pec_KneeAng_Mean_SE, aes(x=stance, y=mean, fill=
   scale_x_continuous(element_blank())+
   geom_line(size=1, alpha=0.75)+
   geom_ribbon(pec_KneeAng_MaxMin, alpha=0.5)+
-  scale_colour_manual(name="species:", # changing legend title
+  scale_colour_manual(name="Species:", # changing legend title
                       labels=c("A. tigrinum  ", "P. barbarus  "), # Changing legend labels
                       values=c("ivory4", "ivory4"))+
-  scale_fill_manual(name="species:", 
+  scale_fill_manual(name="Species:", 
                     labels=c("A. tigrinum  ", "P. barbarus  "),
                     values=c("red","blue"))+
-  scale_linetype_manual(name="species:", 
+  scale_linetype_manual(name="Species:", 
                         labels=c("A. tigrinum  ", "P. barbarus  "),
                         values=c("dashed", "solid"))+
   theme(axis.title.x=element_text(colour="black"))+ # vjust=0 puts a little more spacing btwn the axis text and label
@@ -846,13 +847,13 @@ pec_AnkAng_Plot <- ggplot(data=pec_AnkAng_Mean_SE, aes(x=stance, y=mean, fill=sp
   scale_x_continuous(element_blank())+
   geom_line(size=1, alpha=0.75)+
   geom_ribbon(pec_AnkAng_MaxMin, alpha=0.5)+
-  scale_colour_manual(name="species:", # changing legend title
+  scale_colour_manual(name="Species:", # changing legend title
                       labels=c("A. tigrinum  ", "P. barbarus  "), # Changing legend labels
                       values=c("ivory4", "ivory4"))+
-  scale_fill_manual(name="species:", 
+  scale_fill_manual(name="Species:", 
                     labels=c("A. tigrinum  ", "P. barbarus  "),
                     values=c("red","blue"))+
-  scale_linetype_manual(name="species:", 
+  scale_linetype_manual(name="Species:", 
                         labels=c("A. tigrinum  ", "P. barbarus  "),
                         values=c("dashed", "solid"))+
   theme(axis.title.x=element_text(colour="black"))+ # vjust=0 puts a little more spacing btwn the axis text and label
@@ -880,13 +881,13 @@ pec_Pitch_Plot <- ggplot(data=pec_Pitch_Mean_SE, aes(x=stance, y=mean, fill=spec
   scale_x_continuous(element_blank())+
   geom_line(size=1, alpha=0.75)+
   geom_ribbon(pec_Pitch_MaxMin, alpha=0.5)+
-  scale_colour_manual(name="species:", # changing legend title
+  scale_colour_manual(name="Species:", # changing legend title
                       labels=c("A. tigrinum  ", "P. barbarus  "), # Changing legend labels
                       values=c("ivory4", "ivory4"))+
-  scale_fill_manual(name="species:", 
+  scale_fill_manual(name="Species:", 
                     labels=c("A. tigrinum  ", "P. barbarus  "),
                     values=c("red","blue"))+
-  scale_linetype_manual(name="species:", 
+  scale_linetype_manual(name="Species:", 
                         labels=c("A. tigrinum  ", "P. barbarus  "),
                         values=c("dashed", "solid"))+
   theme(axis.title.x=element_text(colour="black"))+ # vjust=0 puts a little more spacing btwn the axis text and label
@@ -919,15 +920,18 @@ propulsor_Yaw_Plot <- ggplot(data=propulsor_Yaw_Mean_SE, aes(x=stance, y=mean, f
   scale_x_continuous(element_blank())+
   geom_line(size=1, alpha=0.75)+
   geom_ribbon(propulsor_Yaw_MaxMin, alpha=0.5)+
-  scale_colour_manual(name="species:", # changing legend title
+  scale_colour_manual(name="Species:", # changing legend title
                       labels=c("A. tigrinum  ", "P. barbarus  "), # Changing legend labels
                       values=c("ivory4", "ivory4"))+
-  scale_fill_manual(name="species:", 
+  scale_fill_manual(name="Species:", 
                     labels=c("A. tigrinum  ", "P. barbarus  "),
                     values=c("red","blue"))+
-  scale_linetype_manual(name="species:", 
+  scale_linetype_manual(name="Species:", 
                         labels=c("A. tigrinum  ", "P. barbarus  "),
                         values=c("dashed", "solid"))+
+  theme(legend.title = element_text(size = 15))+
+  theme(legend.title = element_text(face = "bold"))+
+  theme(legend.text = element_text(size = 15))+
   theme(axis.title.x=element_text(colour="black"))+ # vjust=0 puts a little more spacing btwn the axis text and label
   theme(axis.title.y=element_text(colour='black', size = 15))+
   theme(axis.text.x=element_text(colour='black', size = 15))+
@@ -953,13 +957,13 @@ propulsor_AbdAdd_Plot <- ggplot(data=propulsor_AbdAdd_Mean_SE, aes(x=stance, y=m
   scale_x_continuous(element_blank())+
   geom_line(size=1, alpha=0.75)+
   geom_ribbon(propulsor_AbdAdd_MaxMin, alpha=0.5)+
-  scale_colour_manual(name="species:", # changing legend title
+  scale_colour_manual(name="Species:", # changing legend title
                       labels=c("A. tigrinum  ", "P. barbarus  "), # Changing legend labels
                       values=c("ivory4", "ivory4"))+
-  scale_fill_manual(name="species:", 
+  scale_fill_manual(name="Species:", 
                     labels=c("A. tigrinum  ", "P. barbarus  "),
                     values=c("red","blue"))+
-  scale_linetype_manual(name="species:", 
+  scale_linetype_manual(name="Species:", 
                         labels=c("A. tigrinum  ", "P. barbarus  "),
                         values=c("dashed", "solid"))+
   theme(axis.title.x=element_text(colour="black"))+ # vjust=0 puts a little more spacing btwn the axis text and label
@@ -989,13 +993,13 @@ propulsor_ProRet_Corr_Plot <- ggplot(data=propulsor_ProRet_Corr_Mean_SE, aes(x=s
   scale_x_continuous(element_blank())+
   geom_line(size=1, alpha=0.75)+
   geom_ribbon(propulsor_ProRet_Corr_MaxMin, alpha=0.5)+
-  scale_colour_manual(name="species:", # changing legend title
+  scale_colour_manual(name="Species:", # changing legend title
                       labels=c("A. tigrinum  ", "P. barbarus  "), # Changing legend labels
                       values=c("ivory4", "ivory4"))+
-  scale_fill_manual(name="species:", 
+  scale_fill_manual(name="Species:", 
                     labels=c("A. tigrinum  ", "P. barbarus  "),
                     values=c("red","blue"))+
-  scale_linetype_manual(name="species:", 
+  scale_linetype_manual(name="Species:", 
                         labels=c("A. tigrinum  ", "P. barbarus  "),
                         values=c("dashed", "solid"))+
   theme(axis.title.x=element_text(colour="black"))+ # vjust=0 puts a little more spacing btwn the axis text and label
@@ -1024,13 +1028,13 @@ propulsor_KneeAng_Plot <- ggplot(data=propulsor_KneeAng_Mean_SE, aes(x=stance, y
   scale_x_continuous(element_blank())+
   geom_line(size=1, alpha=0.75)+
   geom_ribbon(propulsor_KneeAng_MaxMin, alpha=0.5)+
-  scale_colour_manual(name="species:", # changing legend title
+  scale_colour_manual(name="Species:", # changing legend title
                       labels=c("A. tigrinum  ", "P. barbarus  "), # Changing legend labels
                       values=c("ivory4", "ivory4"))+
-  scale_fill_manual(name="species:", 
+  scale_fill_manual(name="Species:", 
                     labels=c("A. tigrinum  ", "P. barbarus  "),
                     values=c("red","blue"))+
-  scale_linetype_manual(name="species:", 
+  scale_linetype_manual(name="Species:", 
                         labels=c("A. tigrinum  ", "P. barbarus  "),
                         values=c("dashed", "solid"))+
   theme(axis.title.x=element_text(colour="black"))+ # vjust=0 puts a little more spacing btwn the axis text and label
@@ -1058,13 +1062,13 @@ propulsor_AnkAng_Plot <- ggplot(data=propulsor_AnkAng_Mean_SE, aes(x=stance, y=m
   scale_x_continuous(element_blank())+
   geom_line(size=1, alpha=0.75)+
   geom_ribbon(propulsor_AnkAng_MaxMin, alpha=0.5)+
-  scale_colour_manual(name="species:", # changing legend title
+  scale_colour_manual(name="Species:", # changing legend title
                       labels=c("A. tigrinum  ", "P. barbarus  "), # Changing legend labels
                       values=c("ivory4", "ivory4"))+
-  scale_fill_manual(name="species:", 
+  scale_fill_manual(name="Species:", 
                     labels=c("A. tigrinum  ", "P. barbarus  "),
                     values=c("red","blue"))+
-  scale_linetype_manual(name="species:", 
+  scale_linetype_manual(name="Species:", 
                         labels=c("A. tigrinum  ", "P. barbarus  "),
                         values=c("dashed", "solid"))+
   theme(axis.title.x=element_text(colour="black"))+ # vjust=0 puts a little more spacing btwn the axis text and label
@@ -1092,13 +1096,13 @@ propulsor_Pitch_Plot <- ggplot(data=propulsor_Pitch_Mean_SE, aes(x=stance, y=mea
   scale_x_continuous(element_blank())+
   geom_line(size=1, alpha=0.75)+
   geom_ribbon(propulsor_Pitch_MaxMin, alpha=0.5)+
-  scale_colour_manual(name="species:", # changing legend title
+  scale_colour_manual(name="Species:", # changing legend title
                       labels=c("A. tigrinum  ", "P. barbarus  "), # Changing legend labels
                       values=c("ivory4", "ivory4"))+
-  scale_fill_manual(name="species:", 
+  scale_fill_manual(name="Species:", 
                     labels=c("A. tigrinum  ", "P. barbarus  "),
                     values=c("red","blue"))+
-  scale_linetype_manual(name="species:", 
+  scale_linetype_manual(name="Species:", 
                         labels=c("A. tigrinum  ", "P. barbarus  "),
                         values=c("dashed", "solid"))+
   theme(axis.title.x=element_text(colour="black"))+ # vjust=0 puts a little more spacing btwn the axis text and label
@@ -1140,6 +1144,9 @@ limb_Yaw_Plot <- ggplot(data=limb_Yaw_Mean_SE, aes(x=stance, y=mean, fill=type, 
   scale_linetype_manual(name="limb:", 
                         labels=c("forelimb  ", "hind limb  "),
                         values=c("dashed", "solid"))+
+  theme(legend.title = element_text(size = 15))+
+  theme(legend.title = element_text(face = "bold"))+
+  theme(legend.text = element_text(size = 15))+
   theme(axis.title.x=element_text(colour="black"))+ # vjust=0 puts a little more spacing btwn the axis text and label
   theme(axis.title.y=element_text(colour='black', size = 15))+
   theme(axis.text.x=element_text(colour='black', size = 15))+
