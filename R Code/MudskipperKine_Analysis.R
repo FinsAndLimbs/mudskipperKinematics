@@ -271,6 +271,11 @@ pb_ProRet_Combined$species <- "pb"
 #so I changed those values back to normal. I also subtracted 90 degrees
 #to change 0 degrees to being perpendicular to the torso, which we were already doing
 
+# Plotting the original data
+ok <- reshape2::melt(pb_ProRet_Combined)
+ggplot(data = ok, aes(x = factor(variable), y = value, color = filename)) +       
+       geom_line(aes(group = filename))
+
 pb_ProRet_Combined_fixed <- pb_ProRet_Combined
 
 pb_ProRet_Combined_fixed[3,1:101]  <- pb_ProRet_Combined_fixed[3,1:101]*-1
@@ -288,6 +293,9 @@ pb_ProRet_Combined_fixed[40,70:101] <- pb_ProRet_Combined_fixed[40,70:101]*-1
 
 pb_ProRet_Combined_fixed[,1:101] <- pb_ProRet_Combined_fixed[,1:101]-90
 
+ok2 <- reshape2::melt(pb_ProRet_Combined_fixed)
+ggplot(data = ok2, aes(x = factor(variable), y = value, color = filename)) +       
+  geom_line(aes(group = filename))
 
 ## pb - Knee / Elbow angle 
 pb_KneeAng <- rep(NA, length(kinFiles_pb))
@@ -1250,6 +1258,7 @@ grid.arrange(arrangeGrob(propulsor_PlotCompare, bottom = xTitle, right = propuls
 lmer_calc <- function(appendage1, appendage2, fixedEffect = "species") {
   #merge dataframes by column. sort set to F since dataframes are already sorted
   jointAngMerged <- merge(appendage1, appendage2, all = T, sort = F) 
+  #jointAngMerged <- rbind(do.call(rbind, appendage1), do.call(rbind, appendage2))
   
   #save individual ID's (eg. at01, pb05) in new column 'Ind'
   jointAngMerged$Ind <- substring(jointAngMerged$filename, 1, 4)
@@ -1327,8 +1336,17 @@ for(i in 1:length(pbVars)){
   
   pb_atpec_lmer[(5*i-4):(5*i)] <- lmer_calc(pbVars[i], at_pec_Vars[i], "species")
   pb_atpel_lmer[(5*i-4):(5*i)] <- lmer_calc(pbVars[i], at_pel_Vars[i], "species")
-  at_pecpel_lmer[(5*i-4):(5*i)] <- lmer_calc(pbVars[i], at_pel_Vars[i], "appendage")
+  at_pecpel_lmer[(5*i-4):(5*i)] <- lmer_calc(at_pec_Vars[i], at_pel_Vars[i], "appendage")
+ 
 }
+
+Vars <- c("AbdAdd_Combined", "AnkAng_Combined", "KneeAng_Combined", "Pitch_Combined", 
+          "ProRet_Combined_fixed", "Yaw_Combined")
+
+names(pb_atpec_lmers) <- paste(rep(Vars, each = 5),"_", rep(c("lmer_max", "lmer_min", "lmer_Tmax", "lmer_Tmin", "lmer_mean")), sep = "")
+names(pb_atpel_lmer) <- paste(rep(Vars, each = 5),"_", rep(c("lmer_max", "lmer_min", "lmer_Tmax", "lmer_Tmin", "lmer_mean")), sep = "")
+names(at_pecpel_lmer) <- paste(rep(Vars, each = 5),"_", rep(c("lmer_max", "lmer_min", "lmer_Tmax", "lmer_Tmin", "lmer_mean")), sep = "")
+
 
 ####Check for Singularity####
 pb_atpec_Singular <- vector()
@@ -1349,18 +1367,35 @@ if(any(pb_atpec_Singular)){
   warning('Singular LMM Results in pb_atpec_lmer[...]')
   print(pb_atpec_Singular)
 } else{pb_atpec_Singular <- NULL}
+names(pb_atpec_lmers)[pb_atpec_Singular]
 
 if(any(pb_atpel_Singular)){
   pb_atpel_Singular <- which(pb_atpel_Singular)
   warning('Singular LMM Results at pb_atpel_lmer[...]')
   print(pb_atpel_Singular)
 } else{pb_atpel_Singular <- NULL}
+names(pb_atpel_lmer)[pb_atpel_Singular]
 
 if(any(at_pecpel_Singular)){
   at_pecpel_Singular <- which(at_pecpel_Singular)
   warning('Singular LMM Results at at_pecpel_lmer[...]')
   print(at_pecpel_Singular)
 } else{at_pecpel_Singular <- NULL}
+names(at_pecpel_lmer)[at_pecpel_Singular]
+# Look at the lmer model that had the singularity
+at_pecpel_lmer[at_pecpel_Singular]
+
+# Manually running the lmer with the singularity issue to confirm it occurs
+at_pel_AnkAng_Combined
+at_pecpel_AnkAng_Combined <- rbind(at_pec_AnkAng_Combined, at_pel_AnkAng_Combined)
+at_pecpel_AnkAng_Combined$Tmin <- apply(at_pecpel_AnkAng_Combined[, 1:101], 1, which.min)
+at_pecpel_AnkAng_Combined$Ind <- substring(at_pecpel_AnkAng_Combined$filename, 1, 4)
+lmer(Tmin ~ appendage + (1|Ind), data = at_pecpel_AnkAng_Combined)
+
+# Checking what the mean and sd are for Tmin 
+aggregate(at_pec$Tmin, list(at_pec$Ind),  function(x) c(mean = mean(x), sd = sd(x)))
+
+
 
 
 #### UNUSED CODE ####
