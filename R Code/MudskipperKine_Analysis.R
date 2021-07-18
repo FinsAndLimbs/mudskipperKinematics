@@ -28,17 +28,19 @@ SaveDate <- format(today, format="%y%m%d")
 
 ## install libraries
 #install.packages("devtools")
+#install.packages("performance")
 
 ## load libraries
-library(devtools)  # for install_github()
-library(ggplot2)   # for ggplot()
-library(sciplot)   # for se()
-library(pspline)   # for smooth.Pspline()
-library(signal)    # for interp1()
-library(cowplot)   # for plot_grid()
-library(grid)      # for textGrob()
-library(gridExtra) # for arrangeGrob() and grid.arrange()
-library(lme4)      # for LMM analysis
+library(devtools)    # for install_github()
+library(ggplot2)     # for ggplot()
+library(sciplot)     # for se()
+library(pspline)     # for smooth.Pspline()
+library(signal)      # for interp1()
+library(cowplot)     # for plot_grid()
+library(grid)        # for textGrob()
+library(gridExtra)   # for arrangeGrob() and grid.arrange()
+library(lme4)        # for LMM analysis
+library(performance) # for r2_nakagawa()
 
 ## use devtools to load the kraken repo from GitHub
 ?install_github # loads the help file for this function
@@ -1341,6 +1343,14 @@ Vars <- c("AbdAdd_Combined", "AnkAng_Combined", "KneeAng_Combined", "Pitch_Combi
 names(pb_atpec_lmers) <- paste(rep(Vars, each = 5),"_", rep(c("lmer_max", "lmer_min", "lmer_Tmax", "lmer_Tmin", "lmer_mean")), sep = "")
 names(pb_atpel_lmer) <- paste(rep(Vars, each = 5),"_", rep(c("lmer_max", "lmer_min", "lmer_Tmax", "lmer_Tmin", "lmer_mean")), sep = "")
 names(at_pecpel_lmer) <- paste(rep(Vars, each = 5),"_", rep(c("lmer_max", "lmer_min", "lmer_Tmax", "lmer_Tmin", "lmer_mean")), sep = "")
+
+
+#### LMER - coefficient of determination ####
+pec_peakNetGRF_mlang_lmm <- lmer(MLAngle_Convert_deg ~ species + (1|individual), data = pec_peakNetGRFs)
+pec_peakNetGRF_mlang_emm <- emmeans(pec_peakNetGRF_mlang_lmm, "species")
+pairs(pec_peakNetGRF_mlang_emm)
+pec_peakNetGRF_mlang_lmm_omega2 <- performance::r2_xu(pec_peakNetGRF_mlang_lmm) # 0.427933
+performance::r2_nakagawa(pec_peakNetGRF_mlang_lmm) # c = 0.421, m = 0.258
 
 
 ####Check for Singularity####
