@@ -272,8 +272,8 @@ pb_ProRet_Combined$species <- "pb"
 #to change 0 degrees to being perpendicular to the torso, which we were already doing
 
 # Plotting the original data
-ok <- reshape2::melt(pb_ProRet_Combined)
-ggplot(data = ok, aes(x = factor(variable), y = value, color = filename)) +       
+orig_pbProRet_Combined <- reshape2::melt(pb_ProRet_Combined)
+ggplot(data = orig_pbProRet_Combined, aes(x = factor(variable), y = value, color = filename)) +       
        geom_line(aes(group = filename))
 
 pb_ProRet_Combined_fixed <- pb_ProRet_Combined
@@ -293,8 +293,8 @@ pb_ProRet_Combined_fixed[40,70:101] <- pb_ProRet_Combined_fixed[40,70:101]*-1
 
 pb_ProRet_Combined_fixed[,1:101] <- pb_ProRet_Combined_fixed[,1:101]-90
 
-ok2 <- reshape2::melt(pb_ProRet_Combined_fixed)
-ggplot(data = ok2, aes(x = factor(variable), y = value, color = filename)) +       
+orig_pbProRet_Combined_fixed <- reshape2::melt(pb_ProRet_Combined_fixed)
+ggplot(data = orig_pbProRet_Combined_fixed, aes(x = factor(variable), y = value, color = filename)) +       
   geom_line(aes(group = filename))
 
 ## pb - Knee / Elbow angle 
@@ -1350,7 +1350,7 @@ for(i in 1:length(pbVars)){
 Vars <- c("AbdAdd_Combined", "AnkAng_Combined", "KneeAng_Combined", "Pitch_Combined", 
           "ProRet_Combined_fixed", "Yaw_Combined")
 
-names(pb_atpec_lmers) <- paste(rep(Vars, each = 5),"_", rep(c("lmer_max", "lmer_min", "lmer_Tmax", "lmer_Tmin", "lmer_mean")), sep = "")
+names(pb_atpec_lmer) <- paste(rep(Vars, each = 5),"_", rep(c("lmer_max", "lmer_min", "lmer_Tmax", "lmer_Tmin", "lmer_mean")), sep = "")
 names(pb_atpel_lmer) <- paste(rep(Vars, each = 5),"_", rep(c("lmer_max", "lmer_min", "lmer_Tmax", "lmer_Tmin", "lmer_mean")), sep = "")
 names(at_pecpel_lmer) <- paste(rep(Vars, each = 5),"_", rep(c("lmer_max", "lmer_min", "lmer_Tmax", "lmer_Tmin", "lmer_mean")), sep = "")
 
@@ -1374,7 +1374,7 @@ if(any(pb_atpec_Singular)){
   warning('Singular LMM Results in pb_atpec_lmer[...]')
   print(pb_atpec_Singular)
 } else{pb_atpec_Singular <- NULL}
-names(pb_atpec_lmers)[pb_atpec_Singular]
+names(pb_atpec_lmer)[pb_atpec_Singular]
 
 if(any(pb_atpel_Singular)){
   pb_atpel_Singular <- which(pb_atpel_Singular)
