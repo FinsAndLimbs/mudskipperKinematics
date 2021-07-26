@@ -39,8 +39,9 @@ library(signal)      # for interp1()
 library(cowplot)     # for plot_grid()
 library(grid)        # for textGrob()
 library(gridExtra)   # for arrangeGrob() and grid.arrange()
-library(lme4)        # for LMM analysis
-library(performance) # for r2_nakagawa()
+library(lme4)        # for lmer()
+library(performance) # for r2_xu()
+library(emmeans)     # for emmeans() and pairs()
 
 ## use devtools to load the kraken repo from GitHub
 ?install_github # loads the help file for this function
@@ -1372,41 +1373,58 @@ names(at_pecpel) <- Vars
 # pb_atpel_lmer <- matrix(NA,5, length(pbVars))
 # at_pecpel_lmer <- matrix(NA,5, length(pbVars))
 
-## Creating empty variables to dump output from for loop
-pb_atpec_lmers <- list()
-pb_atpel_lmer <- list()
-at_pecpel_lmer <- list()
-
-for(i in 1:length(pbVars)){
-## Commenting the following three lines out because they led to the warnings about multiple of replacement length
-  # pb_atpec_lmers[(5*i-4):(5*i)] <- lmer_calc(pbVars[i], at_pec_Vars[i], "species")
-  # pb_atpel_lmer[(5*i-4):(5*i)] <- lmer_calc(pbVars[i], at_pel_Vars[i], "species") # generates error for yaw lmers
-  # at_pecpel_lmer[(5*i-4):(5*i)] <- lmer_calc(at_pec_Vars[i], at_pel_Vars[i], "appendage")
-  pb_atpec_lmers[[i]] <- lmer_calc(pbVars[i], at_pec_Vars[i], "species")
-  pb_atpel_lmer[[i]] <- lmer_calc(pbVars[i], at_pel_Vars[i], "species")
-  at_pecpel_lmer[[i]] <- lmer_calc(at_pec_Vars[i], at_pel_Vars[i], "species")
-}
-
-names(pb_atpec_lmers) <- paste(rep(Vars, each = 5),"_", rep(c("lmer_max", "lmer_min", "lmer_Tmax", "lmer_Tmin", "lmer_mean")), sep = "")
-names(pb_atpel_lmer) <- paste(rep(Vars, each = 5),"_", rep(c("lmer_max", "lmer_min", "lmer_Tmax", "lmer_Tmin", "lmer_mean")), sep = "")
-names(at_pecpel_lmer) <- paste(rep(Vars, each = 5),"_", rep(c("lmer_max", "lmer_min", "lmer_Tmax", "lmer_Tmin", "lmer_mean")), sep = "")
+# ## Creating empty variables to dump output from for loop
+# pb_atpec_lmers <- list()
+# pb_atpel_lmer <- list()
+# at_pecpel_lmer <- list()
+# 
+# for(i in 1:length(pbVars)){
+# ## Commenting the following three lines out because they led to the warnings about multiple of replacement length
+#   # pb_atpec_lmers[(5*i-4):(5*i)] <- lmer_calc(pbVars[i], at_pec_Vars[i], "species")
+#   # pb_atpel_lmer[(5*i-4):(5*i)] <- lmer_calc(pbVars[i], at_pel_Vars[i], "species") # generates error for yaw lmers
+#   # at_pecpel_lmer[(5*i-4):(5*i)] <- lmer_calc(at_pec_Vars[i], at_pel_Vars[i], "appendage")
+#   pb_atpec_lmers[[i]] <- lmer_calc(pbVars[i], at_pec_Vars[i], "species")
+#   pb_atpel_lmer[[i]] <- lmer_calc(pbVars[i], at_pel_Vars[i], "species")
+#   at_pecpel_lmer[[i]] <- lmer_calc(at_pec_Vars[i], at_pel_Vars[i], "species")
+# }
+# 
+# names(pb_atpec_lmers) <- paste(rep(Vars, each = 5),"_", rep(c("lmer_max", "lmer_min", "lmer_Tmax", "lmer_Tmin", "lmer_mean")), sep = "")
+# names(pb_atpel_lmer) <- paste(rep(Vars, each = 5),"_", rep(c("lmer_max", "lmer_min", "lmer_Tmax", "lmer_Tmin", "lmer_mean")), sep = "")
+# names(at_pecpel_lmer) <- paste(rep(Vars, each = 5),"_", rep(c("lmer_max", "lmer_min", "lmer_Tmax", "lmer_Tmin", "lmer_mean")), sep = "")
 
 #### LMERS - manual - Pec - pb vs. at ####
+## Use the output from emmeans() to prepare the table 
+## use the output from pairs() if you're interested in the pairwise difference between the groups
 
 ## AbdAdd_Combined
 pb_atpec_lmer_AbdAdd_Combined_Max <- lmer(Max ~ species + (1|Ind), data = pb_atpec$AbdAdd_Combined)
+pb_atpec_lmer_AbdAdd_Combined_Max_emm <- emmeans(pb_atpec_lmer_AbdAdd_Combined_Max, "species")
+pb_atpec_lmer_AbdAdd_Combined_Max_emm
+pairs(pb_atpec_lmer_AbdAdd_Combined_Max_emm)
 performance::r2_xu(pb_atpec_lmer_AbdAdd_Combined_Max) # Xu's R2 = 0.984
 
 pb_atpec_lmer_AbdAdd_Combined_Min <- lmer(Min ~ species + (1|Ind), data = pb_atpec$AbdAdd_Combined)
+pb_atpec_lmer_AbdAdd_Combined_Min_emm <- emmeans(pb_atpec_lmer_AbdAdd_Combined_Min, "species")
+pb_atpec_lmer_AbdAdd_Combined_Min_emm
+pairs(pb_atpec_lmer_AbdAdd_Combined_Min_emm)
 performance::r2_xu(pb_atpec_lmer_AbdAdd_Combined_Min) # Xu's R2 = 0.977
 
 pb_atpec_lmer_AbdAdd_Combined_Mean <- lmer(Mean ~ species + (1|Ind), data = pb_atpec$AbdAdd_Combined)
+pb_atpec_lmer_AbdAdd_Combined_Mean_emm <- emmeans(pb_atpec_lmer_AbdAdd_Combined_Mean, "species")
+pb_atpec_lmer_AbdAdd_Combined_Mean_emm
+pairs(pb_atpec_lmer_AbdAdd_Combined_Mean_emm)
 performance::r2_xu(pb_atpec_lmer_AbdAdd_Combined_Mean) # Xu's R2 = 0.988
 
 pb_atpec_lmer_AbdAdd_Combined_Tmax <- lmer(Tmax ~ species + (1|Ind), data = pb_atpec$AbdAdd_Combined)
+pb_atpec_lmer_AbdAdd_Combined_Tmax_emm <- emmeans(pb_atpec_lmer_AbdAdd_Combined_Tmax, "species")
+pb_atpec_lmer_AbdAdd_Combined_Tmax_emm
+pairs(pb_atpec_lmer_AbdAdd_Combined_Tmax)
 performance::r2_xu(pb_atpec_lmer_AbdAdd_Combined_Tmax) # Xu's R2 = 0.919
 
 pb_atpec_lmer_AbdAdd_Combined_Tmin <- lmer(Tmin ~ species + (1|Ind), data = pb_atpec$AbdAdd_Combined)
+pb_atpec_lmer_AbdAdd_Combined_Tmin_emm <- emmeans(pb_atpec_lmer_AbdAdd_Combined_Tmin , "species")
+pb_atpec_lmer_AbdAdd_Combined_Tmin_emm
+pairs(pb_atpec_lmer_AbdAdd_Combined_Tmin_emm)
 performance::r2_xu(pb_atpec_lmer_AbdAdd_Combined_Tmin) # Xu's R2 = 0.938
 
 
