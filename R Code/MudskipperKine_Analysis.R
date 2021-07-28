@@ -27,17 +27,20 @@ SaveDate <- format(today, format="%y%m%d")
 
 ## install libraries
 #install.packages("devtools")
+#install.packages("performance")
 
 ## load libraries
-library(devtools)  # for install_github()
-library(ggplot2)   # for ggplot()
-library(sciplot)   # for se()
-library(pspline)   # for smooth.Pspline()
-library(signal)    # for interp1()
-library(cowplot)   # for plot_grid()
-library(grid)      # for textGrob()
-library(gridExtra) # for arrangeGrob() and grid.arrange()
-library(lme4)      # for LMM analysis
+library(devtools)    # for install_github()
+library(ggplot2)     # for ggplot()
+library(sciplot)     # for se()
+library(pspline)     # for smooth.Pspline()
+library(signal)      # for interp1()
+library(cowplot)     # for plot_grid()
+library(grid)        # for textGrob()
+library(gridExtra)   # for arrangeGrob() and grid.arrange()
+library(lme4)        # for lmer()
+library(performance) # for r2_xu()
+library(emmeans)     # for emmeans() and pairs()
 
 ## use devtools to load the kraken repo from GitHub
 ?install_github # loads the help file for this function
@@ -473,7 +476,8 @@ at_pel_ProRet_Combined$species <- "at"
 ## at_pel - Protaction / Retraction angle - corrected by 90 degrees
 at_pel_ProRet_Combined_fixed<- at_pel_ProRet_Combined
 at_pel_ProRet_Combined_fixed[,1:101] <- at_pel_ProRet_Combined[,1:101]-90
-at_pel_ProRet_Combined_fixed <- at_pel_ProRet_Combined_fixed[-c(7,48),]
+at_pel_ProRet_Combined_fixed <- at_pel_ProRet_Combined_fixed[-c(7,48),] # why are these being removed?
+# this is missing two trials
 
 ## at_pel - Knee / Elbow angle 
 at_pel_KneeAng <- rep(NA, length(kinFiles_at_pel))
@@ -1255,6 +1259,26 @@ propulsor_PlotCompare <- plot_grid(propulsor_AbdAdd_Plot + theme(legend.position
 grid.arrange(arrangeGrob(propulsor_PlotCompare, bottom = xTitle, right = propulsor_legend))
 
 
+### lmer_prep() ####
+lmer_prep <- function(appendage1, appendage2) {
+  #merge dataframes by column. sort set to F since dataframes are already sorted
+  jointAngMerged <- merge(appendage1, appendage2, all = T, sort = F) 
+  #jointAngMerged <- rbind(do.call(rbind, appendage1), do.call(rbind, appendage2))
+  
+  #save individual ID's (eg. at01, pb05) in new column 'Ind'
+  jointAngMerged$Ind <- substring(jointAngMerged$filename, 1, 4)
+  
+  #save max/min/mean of each trial (row) and save index (%stance)
+  #of each max/min in new columns
+  jointAngMerged$Max  <- apply(jointAngMerged[, 1:101], 1, max)
+  jointAngMerged$Min  <- apply(jointAngMerged[, 1:101], 1, min)
+  jointAngMerged$Mean <-  apply(jointAngMerged[, 1:101], 1, mean)
+  jointAngMerged$Tmax <- apply(jointAngMerged[, 1:101], 1, which.max)
+  jointAngMerged$Tmin <- apply(jointAngMerged[, 1:101], 1, which.min)
+
+  return(jointAngMerged)
+}
+
 
 ####LMER_CALC()####
 
@@ -1280,7 +1304,7 @@ lmer_calc <- function(appendage1, appendage2, fixedEffect = "species") {
   #TODO: Troubleshoot singularity issues in lmer's 
     
   #run lmers for max and min joint angles, and the %stance of max and min
-  
+
   #compares between species
   if(fixedEffect == "species") {
     lmer_max   <- lmer(Max ~ species + (1|Ind), data = jointAngMerged)
@@ -1288,7 +1312,7 @@ lmer_calc <- function(appendage1, appendage2, fixedEffect = "species") {
     lmer_mean  <- lmer(Mean ~species + (1|Ind), data = jointAngMerged)
     lmer_Tmax <- lmer(Tmax ~ species + (1|Ind), data = jointAngMerged)
     lmer_Tmin <- lmer(Tmin ~ species + (1|Ind), data = jointAngMerged)
-    
+
     #for stats troubleshooting
     #qqnorm(residuals(lmer_max), main = "max")
     #qqnorm(residuals(lmer_min), main = "min")
@@ -1296,7 +1320,7 @@ lmer_calc <- function(appendage1, appendage2, fixedEffect = "species") {
     #qqnorm(residuals(lmer_Tmax), main = "Tmax")
     #qqnorm(residuals(lmer_Tmin), main = "Tmin")
   }
-  
+
   #compares within species
   else if(fixedEffect == "appendage"){
     lmer_max   <- lmer(Max ~ appendage + (1|Ind), data = jointAngMerged)
@@ -1304,7 +1328,7 @@ lmer_calc <- function(appendage1, appendage2, fixedEffect = "species") {
     lmer_mean  <- lmer(Mean ~appendage + (1|Ind), data = jointAngMerged)
     lmer_Tmax <- lmer(Tmax ~ appendage + (1|Ind), data = jointAngMerged)
     lmer_Tmin <- lmer(Tmin ~ appendage + (1|Ind), data = jointAngMerged)
-  
+
     #for stats troubleshooting
     #qqnorm(residuals(lmer_max), main = "max")
     #qqnorm(residuals(lmer_min), main = "min")
@@ -1312,21 +1336,21 @@ lmer_calc <- function(appendage1, appendage2, fixedEffect = "species") {
     #qqnorm(residuals(lmer_Tmax), main = "Tmax")
     #qqnorm(residuals(lmer_Tmin), main = "Tmin")
     }
-  
+
   #if neither appendage or species is specified
   else {
     stop("Please specify the fixed effect: 'species' or 'appendage'")
   }
-  
+
   #combine all lmer results into one list and return list
   #lmer_results <- list(lmer_max, lmer_min, lmer_mean)
   lmer_results <- list(lmer_max, lmer_min, lmer_Tmax, lmer_Tmin, lmer_mean)
-  
+
   return(lmer_results)
 }
 
 
-####LMER CALCULATIONS####
+#### LMER PREP ####
 
 pbVars      <- list(pb_AbdAdd_Combined, pb_AnkAng_Combined, pb_KneeAng_Combined, pb_Pitch_Combined, 
                     pb_ProRet_Combined_fixed, pb_Yaw_Combined)
@@ -1334,6 +1358,7 @@ at_pec_Vars <- list(at_pec_AbdAdd_Combined, at_pec_AnkAng_Combined, at_pec_KneeA
                     at_pec_Pitch_Combined, at_pec_ProRet_Combined_Corr, at_pec_Yaw_Combined)
 at_pel_Vars <- list(at_pel_AbdAdd_Combined, at_pel_AnkAng_Combined, at_pel_KneeAng_Combined, 
                     at_pel_Pitch_Combined, at_pel_ProRet_Combined_fixed, at_pel_Yaw_Combined)
+
 
 pb_atpec_lmer <- matrix(NA,5, length(pbVars))
 pb_atpel_lmer <- matrix(NA,5, length(pbVars))
@@ -1344,7 +1369,17 @@ for(i in 1:length(pbVars)){
   pb_atpec_lmer[(5*i-4):(5*i)] <- lmer_calc(pbVars[i], at_pec_Vars[i], "species")
   pb_atpel_lmer[(5*i-4):(5*i)] <- lmer_calc(pbVars[i], at_pel_Vars[i], "species")
   at_pecpel_lmer[(5*i-4):(5*i)] <- lmer_calc(at_pec_Vars[i], at_pel_Vars[i], "appendage")
- 
+} 
+
+### Prepping dataframes
+pb_atpec <- list()
+pb_atpel <- list()
+at_pecpel <- list()
+
+for(i in 1:length(pbVars)){
+  pb_atpec[[i]] <- lmer_prep(pbVars[i], at_pec_Vars[i])
+  pb_atpel[[i]] <- lmer_prep(pbVars[i], at_pel_Vars[i])
+  at_pecpel[[i]] <- lmer_prep(at_pec_Vars[i], at_pel_Vars[i])
 
 }
 
@@ -1354,6 +1389,371 @@ Vars <- c("AbdAdd_Combined", "AnkAng_Combined", "KneeAng_Combined", "Pitch_Combi
 names(pb_atpec_lmer) <- paste(rep(Vars, each = 5),"_", rep(c("lmer_max", "lmer_min", "lmer_Tmax", "lmer_Tmin", "lmer_mean")), sep = "")
 names(pb_atpel_lmer) <- paste(rep(Vars, each = 5),"_", rep(c("lmer_max", "lmer_min", "lmer_Tmax", "lmer_Tmin", "lmer_mean")), sep = "")
 names(at_pecpel_lmer) <- paste(rep(Vars, each = 5),"_", rep(c("lmer_max", "lmer_min", "lmer_Tmax", "lmer_Tmin", "lmer_mean")), sep = "")
+
+names(pb_atpec) <- Vars
+names(pb_atpel) <- Vars
+names(at_pecpel) <- Vars
+
+
+### LMERs - with lmer_calc ####
+
+## Commenting out because got a lot of warnings about "number of items to replace is not a multiple of replacement length"
+# pb_atpec_lmers <- matrix(NA,5, length(pbVars))
+# pb_atpel_lmer <- matrix(NA,5, length(pbVars))
+# at_pecpel_lmer <- matrix(NA,5, length(pbVars))
+
+# ## Creating empty variables to dump output from for loop
+# pb_atpec_lmers <- list()
+# pb_atpel_lmer <- list()
+# at_pecpel_lmer <- list()
+# 
+# for(i in 1:length(pbVars)){
+# ## Commenting the following three lines out because they led to the warnings about multiple of replacement length
+#   # pb_atpec_lmers[(5*i-4):(5*i)] <- lmer_calc(pbVars[i], at_pec_Vars[i], "species")
+#   # pb_atpel_lmer[(5*i-4):(5*i)] <- lmer_calc(pbVars[i], at_pel_Vars[i], "species") # generates error for yaw lmers
+#   # at_pecpel_lmer[(5*i-4):(5*i)] <- lmer_calc(at_pec_Vars[i], at_pel_Vars[i], "appendage")
+#   pb_atpec_lmers[[i]] <- lmer_calc(pbVars[i], at_pec_Vars[i], "species")
+#   pb_atpel_lmer[[i]] <- lmer_calc(pbVars[i], at_pel_Vars[i], "species")
+#   at_pecpel_lmer[[i]] <- lmer_calc(at_pec_Vars[i], at_pel_Vars[i], "species")
+# }
+# 
+# names(pb_atpec_lmers) <- paste(rep(Vars, each = 5),"_", rep(c("lmer_max", "lmer_min", "lmer_Tmax", "lmer_Tmin", "lmer_mean")), sep = "")
+# names(pb_atpel_lmer) <- paste(rep(Vars, each = 5),"_", rep(c("lmer_max", "lmer_min", "lmer_Tmax", "lmer_Tmin", "lmer_mean")), sep = "")
+# names(at_pecpel_lmer) <- paste(rep(Vars, each = 5),"_", rep(c("lmer_max", "lmer_min", "lmer_Tmax", "lmer_Tmin", "lmer_mean")), sep = "")
+
+#### LMERS - manual - Pec - pb vs. at ####
+## Use the output from emmeans() to prepare the table 
+## use the output from pairs() if you're interested in the pairwise difference between the groups
+
+## AbdAdd_Combined
+pb_atpec_lmer_AbdAdd_Combined_Max <- lmer(Max ~ species + (1|Ind), data = pb_atpec$AbdAdd_Combined)
+pb_atpec_lmer_AbdAdd_Combined_Max_emm <- emmeans(pb_atpec_lmer_AbdAdd_Combined_Max, "species")
+pb_atpec_lmer_AbdAdd_Combined_Max_emm
+pairs(pb_atpec_lmer_AbdAdd_Combined_Max_emm)
+performance::r2_xu(pb_atpec_lmer_AbdAdd_Combined_Max) # Xu's R2 = 0.984
+
+pb_atpec_lmer_AbdAdd_Combined_Min <- lmer(Min ~ species + (1|Ind), data = pb_atpec$AbdAdd_Combined)
+pb_atpec_lmer_AbdAdd_Combined_Min_emm <- emmeans(pb_atpec_lmer_AbdAdd_Combined_Min, "species")
+pb_atpec_lmer_AbdAdd_Combined_Min_emm
+pairs(pb_atpec_lmer_AbdAdd_Combined_Min_emm)
+performance::r2_xu(pb_atpec_lmer_AbdAdd_Combined_Min) # Xu's R2 = 0.977
+
+pb_atpec_lmer_AbdAdd_Combined_Mean <- lmer(Mean ~ species + (1|Ind), data = pb_atpec$AbdAdd_Combined)
+pb_atpec_lmer_AbdAdd_Combined_Mean_emm <- emmeans(pb_atpec_lmer_AbdAdd_Combined_Mean, "species")
+pb_atpec_lmer_AbdAdd_Combined_Mean_emm
+pairs(pb_atpec_lmer_AbdAdd_Combined_Mean_emm)
+performance::r2_xu(pb_atpec_lmer_AbdAdd_Combined_Mean) # Xu's R2 = 0.988
+
+pb_atpec_lmer_AbdAdd_Combined_Tmax <- lmer(Tmax ~ species + (1|Ind), data = pb_atpec$AbdAdd_Combined)
+pb_atpec_lmer_AbdAdd_Combined_Tmax_emm <- emmeans(pb_atpec_lmer_AbdAdd_Combined_Tmax, "species")
+pb_atpec_lmer_AbdAdd_Combined_Tmax_emm
+pairs(pb_atpec_lmer_AbdAdd_Combined_Tmax)
+performance::r2_xu(pb_atpec_lmer_AbdAdd_Combined_Tmax) # Xu's R2 = 0.919
+
+pb_atpec_lmer_AbdAdd_Combined_Tmin <- lmer(Tmin ~ species + (1|Ind), data = pb_atpec$AbdAdd_Combined)
+pb_atpec_lmer_AbdAdd_Combined_Tmin_emm <- emmeans(pb_atpec_lmer_AbdAdd_Combined_Tmin , "species")
+pb_atpec_lmer_AbdAdd_Combined_Tmin_emm
+pairs(pb_atpec_lmer_AbdAdd_Combined_Tmin_emm)
+performance::r2_xu(pb_atpec_lmer_AbdAdd_Combined_Tmin) # Xu's R2 = 0.938
+
+
+## AnkAng_Combined
+pb_atpec_lmer_AnkAng_Combined_Max <- lmer(Max ~ species + (1|Ind), data = pb_atpec$AnkAng_Combined)
+performance::r2_xu(pb_atpec_lmer_AnkAng_Combined_Max) # Xu's R2 = 0.614
+
+pb_atpec_lmer_AnkAng_Combined_Min <- lmer(Min ~ species + (1|Ind), data = pb_atpec$AnkAng_Combined)
+performance::r2_xu(pb_atpec_lmer_AnkAng_Combined_Min) # Xu's R2 = 0.311
+
+pb_atpec_lmer_AnkAng_Combined_Mean <- lmer(Mean ~ species + (1|Ind), data = pb_atpec$AnkAng_Combined)
+performance::r2_xu(pb_atpec_lmer_AnkAng_Combined_Mean) # Xu's R2 = 0.610
+
+pb_atpec_lmer_AnkAng_Combined_Tmax <- lmer(Tmax ~ species + (1|Ind), data = pb_atpec$AnkAng_Combined)
+performance::r2_xu(pb_atpec_lmer_AnkAng_Combined_Tmax) # Xu's R2 = 0.287
+
+pb_atpec_lmer_AnkAng_Combined_Tmin <- lmer(Tmin ~ species + (1|Ind), data = pb_atpec$AnkAng_Combined)
+## singularity issue
+performance::r2_xu(pb_atpec_lmer_AnkAng_Combined_Tmin) # Xu's R2 = 0.536
+
+
+## KneeAng_Combined
+pb_atpec_lmer_KneeAng_Combined_Max <- lmer(Max ~ species + (1|Ind), data = pb_atpec$KneeAng_Combined)
+performance::r2_xu(pb_atpec_lmer_KneeAng_Combined_Max) # Xu's R2 = 0.577
+
+pb_atpec_lmer_KneeAng_Combined_Min <- lmer(Min ~ species + (1|Ind), data = pb_atpec$KneeAng_Combined)
+performance::r2_xu(pb_atpec_lmer_KneeAng_Combined_Min) # Xu's R2 = 0.859
+
+pb_atpec_lmer_KneeAng_Combined_Mean <- lmer(Mean ~ species + (1|Ind), data = pb_atpec$KneeAng_Combined)
+performance::r2_xu(pb_atpec_lmer_KneeAng_Combined_Mean) # Xu's R2 = 0.875
+
+pb_atpec_lmer_KneeAng_Combined_Tmax <- lmer(Tmax ~ species + (1|Ind), data = pb_atpec$KneeAng_Combined)
+performance::r2_xu(pb_atpec_lmer_KneeAng_Combined_Tmax) # Xu's R2 = 0.749
+
+pb_atpec_lmer_KneeAng_Combined_Tmin <- lmer(Tmin ~ species + (1|Ind), data = pb_atpec$KneeAng_Combined)
+performance::r2_xu(pb_atpec_lmer_KneeAng_Combined_Tmin) # Xu's R2 = 0.021
+
+
+## Pitch_Combined
+pb_atpec_lmer_Pitch_Combined_Max <- lmer(Max ~ species + (1|Ind), data = pb_atpec$Pitch_Combined)
+performance::r2_xu(pb_atpec_lmer_Pitch_Combined_Max) # Xu's R2 = 0.851
+
+pb_atpec_lmer_Pitch_Combined_Min <- lmer(Min ~ species + (1|Ind), data = pb_atpec$Pitch_Combined)
+performance::r2_xu(pb_atpec_lmer_Pitch_Combined_Min) # Xu's R2 = 0.878
+
+pb_atpec_lmer_Pitch_Combined_Mean <- lmer(Mean ~ species + (1|Ind), data = pb_atpec$Pitch_Combined)
+performance::r2_xu(pb_atpec_lmer_Pitch_Combined_Mean) # Xu's R2 = 0.877
+
+pb_atpec_lmer_Pitch_Combined_Tmax <- lmer(Tmax ~ species + (1|Ind), data = pb_atpec$Pitch_Combined)
+performance::r2_xu(pb_atpec_lmer_Pitch_Combined_Tmax) # Xu's R2 = 0.541
+
+pb_atpec_lmer_Pitch_Combined_Tmin <- lmer(Tmin ~ species + (1|Ind), data = pb_atpec$Pitch_Combined)
+performance::r2_xu(pb_atpec_lmer_Pitch_Combined_Tmin) # Xu's R2 = 0.300
+
+
+## ProRet_Combined_fixed
+pb_atpec_lmer_ProRet_Combined_fixed_Max <- lmer(Max ~ species + (1|Ind), data = pb_atpec$ProRet_Combined_fixed)
+performance::r2_xu(pb_atpec_lmer_ProRet_Combined_fixed_Max) # Xu's R2 = 0.717
+
+pb_atpec_lmer_ProRet_Combined_fixed_Min <- lmer(Min ~ species + (1|Ind), data = pb_atpec$ProRet_Combined_fixed)
+performance::r2_xu(pb_atpec_lmer_ProRet_Combined_fixed_Min) # Xu's R2 = 0.554
+
+pb_atpec_lmer_ProRet_Combined_fixed_Mean <- lmer(Mean ~ species + (1|Ind), data = pb_atpec$ProRet_Combined_fixed)
+performance::r2_xu(pb_atpec_lmer_ProRet_Combined_fixed_Mean) # Xu's R2 = 0.435
+
+pb_atpec_lmer_ProRet_Combined_fixed_Tmax <- lmer(Tmax ~ species + (1|Ind), data = pb_atpec$ProRet_Combined_fixed)
+## singularity issue
+performance::r2_xu(pb_atpec_lmer_ProRet_Combined_fixed_Tmax) # Xu's R2 = 0.087
+
+pb_atpec_lmer_ProRet_Combined_fixed_Tmin <- lmer(Tmin ~ species + (1|Ind), data = pb_atpec$ProRet_Combined_fixed)
+performance::r2_xu(pb_atpec_lmer_ProRet_Combined_fixed_Tmin) # Xu's R2 = 0.355
+
+
+## Yaw_Combined
+pb_atpec_lmer_Yaw_Combined_Max <- lmer(Max ~ species + (1|Ind), data = pb_atpec$Yaw_Combined)
+performance::r2_xu(pb_atpec_lmer_Yaw_Combined_Max) # Xu's R2 = 0.752
+
+pb_atpec_lmer_Yaw_Combined_Min <- lmer(Min ~ species + (1|Ind), data = pb_atpec$Yaw_Combined)
+performance::r2_xu(pb_atpec_lmer_Yaw_Combined_Min) # Xu's R2 = 0.485
+
+pb_atpec_lmer_Yaw_Combined_Mean <- lmer(Mean ~ species + (1|Ind), data = pb_atpec$Yaw_Combined)
+performance::r2_xu(pb_atpec_lmer_Yaw_Combined_Mean) # Xu's R2 = 0.552
+
+pb_atpec_lmer_Yaw_Combined_Tmax <- lmer(Tmax ~ species + (1|Ind), data = pb_atpec$Yaw_Combined)
+performance::r2_xu(pb_atpec_lmer_Yaw_Combined_Tmax) # Xu's R2 = 0.424
+
+pb_atpec_lmer_Yaw_Combined_Tmin <- lmer(Tmin ~ species + (1|Ind), data = pb_atpec$Yaw_Combined)
+performance::r2_xu(pb_atpec_lmer_Yaw_Combined_Tmin) # Xu's R2 = 0.472
+
+
+
+#### LMERS - manual - Propulsors - pb vs. at ####
+
+## AbdAdd_Combined
+pb_atpel_lmer_AbdAdd_Combined_Max <- lmer(Max ~ species + (1|Ind), data = pb_atpel$AbdAdd_Combined)
+performance::r2_xu(pb_atpel_lmer_AbdAdd_Combined_Max) # Xu's R2 = 0.968
+
+pb_atpel_lmer_AbdAdd_Combined_Min <- lmer(Min ~ species + (1|Ind), data = pb_atpel$AbdAdd_Combined)
+performance::r2_xu(pb_atpel_lmer_AbdAdd_Combined_Min) # Xu's R2 = 0.955
+
+pb_atpel_lmer_AbdAdd_Combined_Mean <- lmer(Mean ~ species + (1|Ind), data = pb_atpel$AbdAdd_Combined)
+performance::r2_xu(pb_atpel_lmer_AbdAdd_Combined_Mean) # Xu's R2 = 0.978
+
+pb_atpel_lmer_AbdAdd_Combined_Tmax <- lmer(Tmax ~ species + (1|Ind), data = pb_atpel$AbdAdd_Combined)
+performance::r2_xu(pb_atpel_lmer_AbdAdd_Combined_Tmax) # Xu's R2 = 0.416
+
+pb_atpel_lmer_AbdAdd_Combined_Tmin <- lmer(Tmin ~ species + (1|Ind), data = pb_atpel$AbdAdd_Combined)
+performance::r2_xu(pb_atpel_lmer_AbdAdd_Combined_Tmin) # Xu's R2 = 0.387
+
+
+## AnkAng_Combined
+pb_atpel_lmer_AnkAng_Combined_Max <- lmer(Max ~ species + (1|Ind), data = pb_atpel$AnkAng_Combined)
+performance::r2_xu(pb_atpel_lmer_AnkAng_Combined_Max) # Xu's R2 = 0.370
+
+pb_atpel_lmer_AnkAng_Combined_Min <- lmer(Min ~ species + (1|Ind), data = pb_atpel$AnkAng_Combined)
+performance::r2_xu(pb_atpel_lmer_AnkAng_Combined_Min) # Xu's R2 = 0.688
+
+pb_atpel_lmer_AnkAng_Combined_Mean <- lmer(Mean ~ species + (1|Ind), data = pb_atpel$AnkAng_Combined)
+performance::r2_xu(pb_atpel_lmer_AnkAng_Combined_Mean) # Xu's R2 = 0.899
+
+pb_atpel_lmer_AnkAng_Combined_Tmax <- lmer(Tmax ~ species + (1|Ind), data = pb_atpel$AnkAng_Combined)
+performance::r2_xu(pb_atpel_lmer_AnkAng_Combined_Tmax) # Xu's R2 = 0.430
+
+pb_atpel_lmer_AnkAng_Combined_Tmin <- lmer(Tmin ~ species + (1|Ind), data = pb_atpel$AnkAng_Combined)
+## singularity issue
+performance::r2_xu(pb_atpel_lmer_AnkAng_Combined_Tmin) # Xu's R2 = 0.275
+
+
+## KneeAng_Combined
+pb_atpel_lmer_KneeAng_Combined_Max <- lmer(Max ~ species + (1|Ind), data = pb_atpel$KneeAng_Combined)
+performance::r2_xu(pb_atpel_lmer_KneeAng_Combined_Max) # Xu's R2 = 0.368
+
+pb_atpel_lmer_KneeAng_Combined_Min <- lmer(Min ~ species + (1|Ind), data = pb_atpel$KneeAng_Combined)
+performance::r2_xu(pb_atpel_lmer_KneeAng_Combined_Min) # Xu's R2 = 0.809
+
+pb_atpel_lmer_KneeAng_Combined_Mean <- lmer(Mean ~ species + (1|Ind), data = pb_atpel$KneeAng_Combined)
+performance::r2_xu(pb_atpel_lmer_KneeAng_Combined_Mean) # Xu's R2 = 0.794
+
+pb_atpel_lmer_KneeAng_Combined_Tmax <- lmer(Tmax ~ species + (1|Ind), data = pb_atpel$KneeAng_Combined)
+performance::r2_xu(pb_atpel_lmer_KneeAng_Combined_Tmax) # Xu's R2 = 0.156
+
+pb_atpel_lmer_KneeAng_Combined_Tmin <- lmer(Tmin ~ species + (1|Ind), data = pb_atpel$KneeAng_Combined)
+performance::r2_xu(pb_atpel_lmer_KneeAng_Combined_Tmin) # Xu's R2 = 0.130
+
+
+## Pitch_Combined
+pb_atpel_lmer_Pitch_Combined_Max <- lmer(Max ~ species + (1|Ind), data = pb_atpel$Pitch_Combined)
+performance::r2_xu(pb_atpel_lmer_Pitch_Combined_Max) # Xu's R2 = 0.967
+
+pb_atpel_lmer_Pitch_Combined_Min <- lmer(Min ~ species + (1|Ind), data = pb_atpel$Pitch_Combined)
+performance::r2_xu(pb_atpel_lmer_Pitch_Combined_Min) # Xu's R2 = 0.963
+
+pb_atpel_lmer_Pitch_Combined_Mean <- lmer(Mean ~ species + (1|Ind), data = pb_atpel$Pitch_Combined)
+performance::r2_xu(pb_atpel_lmer_Pitch_Combined_Mean) # Xu's R2 = 0.967
+
+pb_atpel_lmer_Pitch_Combined_Tmax <- lmer(Tmax ~ species + (1|Ind), data = pb_atpel$Pitch_Combined)
+performance::r2_xu(pb_atpel_lmer_Pitch_Combined_Tmax) # Xu's R2 = 0.447
+
+pb_atpel_lmer_Pitch_Combined_Tmin <- lmer(Tmin ~ species + (1|Ind), data = pb_atpel$Pitch_Combined)
+performance::r2_xu(pb_atpel_lmer_Pitch_Combined_Tmin) # Xu's R2 = 0.270
+
+
+## ProRet_Combined_fixed
+pb_atpel_lmer_ProRet_Combined_fixed_Max <- lmer(Max ~ species + (1|Ind), data = pb_atpel$ProRet_Combined_fixed)
+performance::r2_xu(pb_atpel_lmer_ProRet_Combined_fixed_Max) # Xu's R2 = 0.927
+
+pb_atpel_lmer_ProRet_Combined_fixed_Min <- lmer(Min ~ species + (1|Ind), data = pb_atpel$ProRet_Combined_fixed)
+performance::r2_xu(pb_atpel_lmer_ProRet_Combined_fixed_Min) # Xu's R2 = 0.237
+
+pb_atpel_lmer_ProRet_Combined_fixed_Mean <- lmer(Mean ~ species + (1|Ind), data = pb_atpel$ProRet_Combined_fixed)
+performance::r2_xu(pb_atpel_lmer_ProRet_Combined_fixed_Mean) # Xu's R2 = 0.843
+
+pb_atpel_lmer_ProRet_Combined_fixed_Tmax <- lmer(Tmax ~ species + (1|Ind), data = pb_atpel$ProRet_Combined_fixed)
+performance::r2_xu(pb_atpel_lmer_ProRet_Combined_fixed_Tmax) # Xu's R2 = 0.020
+
+pb_atpel_lmer_ProRet_Combined_fixed_Tmin <- lmer(Tmin ~ species + (1|Ind), data = pb_atpel$ProRet_Combined_fixed)
+# singularity issue
+performance::r2_xu(pb_atpel_lmer_ProRet_Combined_fixed_Tmin) # Xu's R2 = 0.178
+
+
+## Yaw_Combined
+pb_atpel_lmer_Yaw_Combined_Max <- lmer(Max ~ species + (1|Ind), data = pb_atpel$Yaw_Combined)
+performance::r2_xu(pb_atpel_lmer_Yaw_Combined_Max) # Xu's R2 = 0.719
+
+pb_atpel_lmer_Yaw_Combined_Min <- lmer(Min ~ species + (1|Ind), data = pb_atpel$Yaw_Combined)
+performance::r2_xu(pb_atpel_lmer_Yaw_Combined_Min) # Xu's R2 = 0.649
+
+pb_atpel_lmer_Yaw_Combined_Mean <- lmer(Mean ~ species + (1|Ind), data = pb_atpel$Yaw_Combined)
+performance::r2_xu(pb_atpel_lmer_Yaw_Combined_Mean) # Xu's R2 = 0.448
+
+pb_atpel_lmer_Yaw_Combined_Tmax <- lmer(Tmax ~ species + (1|Ind), data = pb_atpel$Yaw_Combined)
+performance::r2_xu(pb_atpel_lmer_Yaw_Combined_Tmax) # Xu's R2 = 0.218
+
+pb_atpel_lmer_Yaw_Combined_Tmin <- lmer(Tmin ~ species + (1|Ind), data = pb_atpel$Yaw_Combined)
+performance::r2_xu(pb_atpel_lmer_Yaw_Combined_Tmin) # Xu's R2 = 0.457
+
+
+#### LMERS - manual - At - forelimb vs. hindlimb ####
+
+## AbdAdd_Combined
+at_pecpel_lmer_AbdAdd_Combined_Max <- lmer(Max ~ appendage + (1|Ind), data = at_pecpel$AbdAdd_Combined)
+performance::r2_xu(at_pecpel_lmer_AbdAdd_Combined_Max) # Xu's R2 = 0.815
+
+at_pecpel_lmer_AbdAdd_Combined_Min <- lmer(Min ~ appendage + (1|Ind), data = at_pecpel$AbdAdd_Combined)
+performance::r2_xu(at_pecpel_lmer_AbdAdd_Combined_Min) # Xu's R2 = 0.621
+
+at_pecpel_lmer_AbdAdd_Combined_Mean <- lmer(Mean ~ appendage + (1|Ind), data = at_pecpel$AbdAdd_Combined)
+performance::r2_xu(at_pecpel_lmer_AbdAdd_Combined_Mean) # Xu's R2 = 0.851
+
+at_pecpel_lmer_AbdAdd_Combined_Tmax <- lmer(Tmax ~ appendage + (1|Ind), data = at_pecpel$AbdAdd_Combined)
+performance::r2_xu(at_pecpel_lmer_AbdAdd_Combined_Tmax) # Xu's R2 = 0.679
+
+at_pecpel_lmer_AbdAdd_Combined_Tmin <- lmer(Tmin ~ appendage + (1|Ind), data = at_pecpel$AbdAdd_Combined)
+performance::r2_xu(at_pecpel_lmer_AbdAdd_Combined_Tmin) # Xu's R2 = 0.587
+
+
+## AnkAng_Combined
+at_pecpel_lmer_AnkAng_Combined_Max <- lmer(Max ~ appendage + (1|Ind), data = at_pecpel$AnkAng_Combined)
+performance::r2_xu(at_pecpel_lmer_AnkAng_Combined_Max) # Xu's R2 = 0.274
+
+at_pecpel_lmer_AnkAng_Combined_Min <- lmer(Min ~ appendage + (1|Ind), data = at_pecpel$AnkAng_Combined)
+performance::r2_xu(at_pecpel_lmer_AnkAng_Combined_Min) # Xu's R2 = 0.843
+
+at_pecpel_lmer_AnkAng_Combined_Mean <- lmer(Mean ~ appendage + (1|Ind), data = at_pecpel$AnkAng_Combined)
+performance::r2_xu(at_pecpel_lmer_AnkAng_Combined_Mean) # Xu's R2 = 0.859
+
+at_pecpel_lmer_AnkAng_Combined_Tmax <- lmer(Tmax ~ appendage + (1|Ind), data = at_pecpel$AnkAng_Combined)
+performance::r2_xu(at_pecpel_lmer_AnkAng_Combined_Tmax) # Xu's R2 = 0.068
+
+at_pecpel_lmer_AnkAng_Combined_Tmin <- lmer(Tmin ~ appendage + (1|Ind), data = at_pecpel$AnkAng_Combined)
+## singularity issue
+performance::r2_xu(at_pecpel_lmer_AnkAng_Combined_Tmin) # Xu's R2 = 0.300
+
+
+## KneeAng_Combined
+at_pecpel_lmer_KneeAng_Combined_Max <- lmer(Max ~ appendage + (1|Ind), data = at_pecpel$KneeAng_Combined)
+performance::r2_xu(at_pecpel_lmer_KneeAng_Combined_Max) # Xu's R2 = 0.509
+
+at_pecpel_lmer_KneeAng_Combined_Min <- lmer(Min ~ appendage + (1|Ind), data = at_pecpel$KneeAng_Combined)
+performance::r2_xu(at_pecpel_lmer_KneeAng_Combined_Min) # Xu's R2 = 0.425
+
+at_pecpel_lmer_KneeAng_Combined_Mean <- lmer(Mean ~ appendage + (1|Ind), data = at_pecpel$KneeAng_Combined)
+performance::r2_xu(at_pecpel_lmer_KneeAng_Combined_Mean) # Xu's R2 = 0.636
+
+at_pecpel_lmer_KneeAng_Combined_Tmax <- lmer(Tmax ~ appendage + (1|Ind), data = at_pecpel$KneeAng_Combined)
+performance::r2_xu(at_pecpel_lmer_KneeAng_Combined_Tmax) # Xu's R2 = 0.670
+
+at_pecpel_lmer_KneeAng_Combined_Tmin <- lmer(Tmin ~ appendage + (1|Ind), data = at_pecpel$KneeAng_Combined)
+performance::r2_xu(at_pecpel_lmer_KneeAng_Combined_Tmin) # Xu's R2 = 0.237
+
+
+## Pitch_Combined
+at_pecpel_lmer_Pitch_Combined_Max <- lmer(Max ~ appendage + (1|Ind), data = at_pecpel$Pitch_Combined)
+performance::r2_xu(at_pecpel_lmer_Pitch_Combined_Max) # Xu's R2 = 0.867
+
+at_pecpel_lmer_Pitch_Combined_Min <- lmer(Min ~ appendage + (1|Ind), data = at_pecpel$Pitch_Combined)
+performance::r2_xu(at_pecpel_lmer_Pitch_Combined_Min) # Xu's R2 = 0.750
+
+at_pecpel_lmer_Pitch_Combined_Mean <- lmer(Mean ~ appendage + (1|Ind), data = at_pecpel$Pitch_Combined)
+performance::r2_xu(at_pecpel_lmer_Pitch_Combined_Mean) # Xu's R2 = 0.821
+
+at_pecpel_lmer_Pitch_Combined_Tmax <- lmer(Tmax ~ appendage + (1|Ind), data = at_pecpel$Pitch_Combined)
+performance::r2_xu(at_pecpel_lmer_Pitch_Combined_Tmax) # Xu's R2 = 0.116
+
+at_pecpel_lmer_Pitch_Combined_Tmin <- lmer(Tmin ~ appendage + (1|Ind), data = at_pecpel$Pitch_Combined)
+performance::r2_xu(at_pecpel_lmer_Pitch_Combined_Tmin) # Xu's R2 = 0.125
+
+
+## ProRet_Combined_fixed
+at_pecpel_lmer_ProRet_Combined_fixed_Max <- lmer(Max ~ appendage + (1|Ind), data = at_pecpel$ProRet_Combined_fixed)
+performance::r2_xu(at_pecpel_lmer_ProRet_Combined_fixed_Max) # Xu's R2 = 0.817
+
+at_pecpel_lmer_ProRet_Combined_fixed_Min <- lmer(Min ~ appendage + (1|Ind), data = at_pecpel$ProRet_Combined_fixed)
+performance::r2_xu(at_pecpel_lmer_ProRet_Combined_fixed_Min) # Xu's R2 = 0.078
+
+at_pecpel_lmer_ProRet_Combined_fixed_Mean <- lmer(Mean ~ appendage + (1|Ind), data = at_pecpel$ProRet_Combined_fixed)
+performance::r2_xu(at_pecpel_lmer_ProRet_Combined_fixed_Mean) # Xu's R2 = 0.864
+
+at_pecpel_lmer_ProRet_Combined_fixed_Tmax <- lmer(Tmax ~ appendage + (1|Ind), data = at_pecpel$ProRet_Combined_fixed)
+performance::r2_xu(at_pecpel_lmer_ProRet_Combined_fixed_Tmax) # Xu's R2 = 0.408
+
+at_pecpel_lmer_ProRet_Combined_fixed_Tmin <- lmer(Tmin ~ appendage + (1|Ind), data = at_pecpel$ProRet_Combined_fixed)
+performance::r2_xu(at_pecpel_lmer_ProRet_Combined_fixed_Tmin) # Xu's R2 = 0.312
+
+
+## Yaw_Combined
+at_pecpel_lmer_Yaw_Combined_Max <- lmer(Max ~ appendage + (1|Ind), data = at_pecpel$Yaw_Combined)
+performance::r2_xu(at_pecpel_lmer_Yaw_Combined_Max) # Xu's R2 = 0.193
+
+at_pecpel_lmer_Yaw_Combined_Min <- lmer(Min ~ appendage + (1|Ind), data = at_pecpel$Yaw_Combined)
+performance::r2_xu(at_pecpel_lmer_Yaw_Combined_Min) # Xu's R2 = 0.308
+
+at_pecpel_lmer_Yaw_Combined_Mean <- lmer(Mean ~ appendage + (1|Ind), data = at_pecpel$Yaw_Combined)
+performance::r2_xu(at_pecpel_lmer_Yaw_Combined_Mean) # Xu's R2 = 0.148
+
+at_pecpel_lmer_Yaw_Combined_Tmax <- lmer(Tmax ~ appendage + (1|Ind), data = at_pecpel$Yaw_Combined)
+performance::r2_xu(at_pecpel_lmer_Yaw_Combined_Tmax) # Xu's R2 = 0.673
+
+at_pecpel_lmer_Yaw_Combined_Tmin <- lmer(Tmin ~ appendage + (1|Ind), data = at_pecpel$Yaw_Combined)
+performance::r2_xu(at_pecpel_lmer_Yaw_Combined_Tmin) # Xu's R2 = 0.137
 
 
 ####Check for Singularity####
