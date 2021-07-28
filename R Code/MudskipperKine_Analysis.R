@@ -1345,6 +1345,7 @@ for(i in 1:length(pbVars)){
   pb_atpel_lmer[(5*i-4):(5*i)] <- lmer_calc(pbVars[i], at_pel_Vars[i], "species")
   at_pecpel_lmer[(5*i-4):(5*i)] <- lmer_calc(at_pec_Vars[i], at_pel_Vars[i], "appendage")
  
+
 }
 
 Vars <- c("AbdAdd_Combined", "AnkAng_Combined", "KneeAng_Combined", "Pitch_Combined", 
