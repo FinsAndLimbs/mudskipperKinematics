@@ -1615,23 +1615,25 @@ performance::r2_xu(pb_atpel_lmer_Pitch_Combined_Tmax) # Xu's R2 = 0.447
 pb_atpel_lmer_Pitch_Combined_Tmin <- lmer(Tmin ~ species + (1|Ind), data = pb_atpel$Pitch_Combined)
 performance::r2_xu(pb_atpel_lmer_Pitch_Combined_Tmin) # Xu's R2 = 0.270
 
+##I ran the Xu's R2 calculations and included the values that I got if they
+# differ from what you had written 
 
 ## ProRet_Combined_fixed
 pb_atpel_lmer_ProRet_Combined_fixed_Max <- lmer(Max ~ species + (1|Ind), data = pb_atpel$ProRet_Combined_fixed)
-performance::r2_xu(pb_atpel_lmer_ProRet_Combined_fixed_Max) # Xu's R2 = 0.927
+performance::r2_xu(pb_atpel_lmer_ProRet_Combined_fixed_Max) # Xu's R2 = 0.927; Zach's = 0.926
 
 pb_atpel_lmer_ProRet_Combined_fixed_Min <- lmer(Min ~ species + (1|Ind), data = pb_atpel$ProRet_Combined_fixed)
-performance::r2_xu(pb_atpel_lmer_ProRet_Combined_fixed_Min) # Xu's R2 = 0.237
+performance::r2_xu(pb_atpel_lmer_ProRet_Combined_fixed_Min) # Xu's R2 = 0.237; Zach's = 0.713
 
 pb_atpel_lmer_ProRet_Combined_fixed_Mean <- lmer(Mean ~ species + (1|Ind), data = pb_atpel$ProRet_Combined_fixed)
-performance::r2_xu(pb_atpel_lmer_ProRet_Combined_fixed_Mean) # Xu's R2 = 0.843
+performance::r2_xu(pb_atpel_lmer_ProRet_Combined_fixed_Mean) # Xu's R2 = 0.843; Zach's = 0.845
 
 pb_atpel_lmer_ProRet_Combined_fixed_Tmax <- lmer(Tmax ~ species + (1|Ind), data = pb_atpel$ProRet_Combined_fixed)
-performance::r2_xu(pb_atpel_lmer_ProRet_Combined_fixed_Tmax) # Xu's R2 = 0.020
+performance::r2_xu(pb_atpel_lmer_ProRet_Combined_fixed_Tmax) # Xu's R2 = 0.020; Zach's = 0.011
 
 pb_atpel_lmer_ProRet_Combined_fixed_Tmin <- lmer(Tmin ~ species + (1|Ind), data = pb_atpel$ProRet_Combined_fixed)
 # singularity issue
-performance::r2_xu(pb_atpel_lmer_ProRet_Combined_fixed_Tmin) # Xu's R2 = 0.178
+performance::r2_xu(pb_atpel_lmer_ProRet_Combined_fixed_Tmin) # Xu's R2 = 0.178; Zach's = 0.317
 
 
 ## Yaw_Combined
@@ -1724,19 +1726,19 @@ performance::r2_xu(at_pecpel_lmer_Pitch_Combined_Tmin) # Xu's R2 = 0.125
 
 ## ProRet_Combined_fixed
 at_pecpel_lmer_ProRet_Combined_fixed_Max <- lmer(Max ~ appendage + (1|Ind), data = at_pecpel$ProRet_Combined_fixed)
-performance::r2_xu(at_pecpel_lmer_ProRet_Combined_fixed_Max) # Xu's R2 = 0.817
+performance::r2_xu(at_pecpel_lmer_ProRet_Combined_fixed_Max) # Xu's R2 = 0.817; Zach's = 0.811
 
 at_pecpel_lmer_ProRet_Combined_fixed_Min <- lmer(Min ~ appendage + (1|Ind), data = at_pecpel$ProRet_Combined_fixed)
-performance::r2_xu(at_pecpel_lmer_ProRet_Combined_fixed_Min) # Xu's R2 = 0.078
+performance::r2_xu(at_pecpel_lmer_ProRet_Combined_fixed_Min) # Xu's R2 = 0.078; Zach's = 0.331
 
 at_pecpel_lmer_ProRet_Combined_fixed_Mean <- lmer(Mean ~ appendage + (1|Ind), data = at_pecpel$ProRet_Combined_fixed)
-performance::r2_xu(at_pecpel_lmer_ProRet_Combined_fixed_Mean) # Xu's R2 = 0.864
+performance::r2_xu(at_pecpel_lmer_ProRet_Combined_fixed_Mean) # Xu's R2 = 0.864; Zach's = 0.869
 
 at_pecpel_lmer_ProRet_Combined_fixed_Tmax <- lmer(Tmax ~ appendage + (1|Ind), data = at_pecpel$ProRet_Combined_fixed)
-performance::r2_xu(at_pecpel_lmer_ProRet_Combined_fixed_Tmax) # Xu's R2 = 0.408
+performance::r2_xu(at_pecpel_lmer_ProRet_Combined_fixed_Tmax) # Xu's R2 = 0.408; Zach's = 0.399
 
 at_pecpel_lmer_ProRet_Combined_fixed_Tmin <- lmer(Tmin ~ appendage + (1|Ind), data = at_pecpel$ProRet_Combined_fixed)
-performance::r2_xu(at_pecpel_lmer_ProRet_Combined_fixed_Tmin) # Xu's R2 = 0.312
+performance::r2_xu(at_pecpel_lmer_ProRet_Combined_fixed_Tmin) # Xu's R2 = 0.312; Zach's = 0.415
 
 
 ## Yaw_Combined
