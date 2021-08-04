@@ -1425,6 +1425,10 @@ names(at_pecpel) <- Vars
 ## Use the output from emmeans() to prepare the table 
 ## use the output from pairs() if you're interested in the pairwise difference between the groups
 
+#sets emmeans() to return all sigfigs instead of only first 3 digits (rounded)
+#(EX: returned 22.3 or 154 at first, now returns 22.331 and 153.61)
+emm_options(opt.digits = F)
+
 ## AbdAdd_Combined
 pb_atpec_lmer_AbdAdd_Combined_Max <- lmer(Max ~ species + (1|Ind), data = pb_atpec$AbdAdd_Combined)
 pb_atpec_lmer_AbdAdd_Combined_Max_emm <- emmeans(pb_atpec_lmer_AbdAdd_Combined_Max, "species")
