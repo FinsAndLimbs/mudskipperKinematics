@@ -1429,6 +1429,34 @@ names(at_pecpel) <- Vars
 #(EX: returned 22.3 or 154 at first, now returns 22.331 and 153.61)
 emm_options(opt.digits = F)
 
+##Table 1##
+tab1_data <- list()
+#save emmeans outputs to list
+for(i in 1:length(pb_atpec_lmer)){
+  tab1_data[i] <- emmeans(pb_atpec_lmer[[i]], "species")}
+
+#name list entries
+names(tab1_data) <- paste(rep(Vars, each = 5),"_", rep(c("emm_max", "emm_min", "emm_Tmax", "emm_Tmin", "emm_mean")), sep = "")
+
+##Table 2##
+tab2_data <- list()
+#save emmeans outputs to list
+for(i in 1:length(pb_atpec_lmer)){
+  tab2_data[i] <- emmeans(pb_atpel_lmer[[i]], "species")}
+
+#name list entries
+names(tab2_data) <- paste(rep(Vars, each = 5),"_", rep(c("emm_max", "emm_min", "emm_Tmax", "emm_Tmin", "emm_mean")), sep = "")
+
+##Table 3##
+tab3_data <- list()
+#save emmeans outputs to list
+for(i in 1:length(at_pecpel_lmer)){
+  tab3_data[i] <- emmeans(at_pecpel_lmer[[i]], "appendage")}
+
+#name list entries
+names(tab3_data) <- paste(rep(Vars, each = 5),"_", rep(c("emm_max", "emm_min", "emm_Tmax", "emm_Tmin", "emm_mean")), sep = "")
+
+
 ## AbdAdd_Combined
 pb_atpec_lmer_AbdAdd_Combined_Max <- lmer(Max ~ species + (1|Ind), data = pb_atpec$AbdAdd_Combined)
 pb_atpec_lmer_AbdAdd_Combined_Max_emm <- emmeans(pb_atpec_lmer_AbdAdd_Combined_Max, "species")
@@ -1620,9 +1648,6 @@ performance::r2_xu(pb_atpel_lmer_Pitch_Combined_Tmax) # Xu's R2 = 0.447
 
 pb_atpel_lmer_Pitch_Combined_Tmin <- lmer(Tmin ~ species + (1|Ind), data = pb_atpel$Pitch_Combined)
 performance::r2_xu(pb_atpel_lmer_Pitch_Combined_Tmin) # Xu's R2 = 0.270
-
-##I ran the Xu's R2 calculations and included the values that I got if they
-# differ from what you had written 
 
 ## ProRet_Combined_fixed
 pb_atpel_lmer_ProRet_Combined_fixed_Max <- lmer(Max ~ species + (1|Ind), data = pb_atpel$ProRet_Combined_fixed)
