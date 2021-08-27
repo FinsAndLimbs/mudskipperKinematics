@@ -705,7 +705,7 @@ pec_Yaw_MaxMin <- aes(ymax=pec_Yaw_Mean_SE$mean + pec_Yaw_Mean_SE$SE, ymin=pec_Y
 
 
 pec_Yaw_Plot <- ggplot(data=pec_Yaw_Mean_SE, aes(x=stance, y=mean, fill=species, linetype=species))+
-  scale_y_continuous("\nYaw (degrees)")+
+  scale_y_continuous("\nYaw (°)")+
   #scale_x_continuous("\nStance (%)\n")+
   scale_x_continuous(element_blank())+
   geom_line(size=1, alpha=0.75)+
@@ -741,7 +741,7 @@ pec_AbdAdd_MaxMin <- aes(ymax=pec_AbdAdd_Mean_SE$mean + pec_AbdAdd_Mean_SE$SE, y
 
 
 pec_AbdAdd_Plot <- ggplot(data=pec_AbdAdd_Mean_SE, aes(x=stance, y=mean, fill=species, linetype=species))+
-  scale_y_continuous("\nAbduct / Adduct (degrees)")+
+  scale_y_continuous("\nAbduct / Adduct (°)")+
   #scale_x_continuous("\nStance (%)\n")+
   scale_x_continuous(element_blank())+
   geom_line(size=1, alpha=0.75)+
@@ -777,7 +777,7 @@ pec_ProRet_Corr_MaxMin <- aes(ymax=pec_ProRet_Corr_Mean_SE$mean + pec_ProRet_Cor
 
 
 pec_ProRet_Corr_Plot <- ggplot(data=pec_ProRet_Corr_Mean_SE, aes(x=stance, y=mean, fill=species, linetype=species))+
-  scale_y_continuous("\nProtract / Retract (degrees)")+
+  scale_y_continuous("\nProtract / Retract (°)")+
   #scale_x_continuous("\nStance (%)\n")+
   scale_x_continuous(element_blank())+
   geom_line(size=1, alpha=0.75)+
@@ -812,7 +812,9 @@ pec_KneeAng_MaxMin <- aes(ymax=pec_KneeAng_Mean_SE$mean + pec_KneeAng_Mean_SE$SE
 
 
 pec_KneeAng_Plot <- ggplot(data=pec_KneeAng_Mean_SE, aes(x=stance, y=mean, fill=species, linetype=species))+
-  scale_y_continuous("\nElbow angle (degrees)")+
+  #scale_y_continuous("\nElbow angle (degrees)")+
+  #set Elbow/Knee and Wrist/Ankle to have the same scale
+  scale_y_continuous(name = "\nElbow angle (°)", limits = c(60, 170))+
   #scale_x_continuous("\nStance (%)\n")+
   scale_x_continuous(element_blank())+
   geom_line(size=1, alpha=0.75)+
@@ -835,7 +837,9 @@ pec_KneeAng_Plot <- ggplot(data=pec_KneeAng_Mean_SE, aes(x=stance, y=mean, fill=
   theme(axis.line=element_line(colour="black", linetype="solid"))+ # put black lines for axes
   #theme(legend.position="bottom", legend.direction="horizontal")+
   #theme(plot.title=element_text(size=8))+
-  annotate("text",  x=95, y = 160, label = "Extension", size=5)+
+  #annotate("text",  x=95, y = 165, label = "Extension", size=5)+
+  annotate("text",  x=95, y = 170, label = "Extension", size=5)+
+  #annotate("text", label = "Flexion", x = 95, y = 100, size=5)
   annotate("text", label = "Flexion", x = 95, y = 60, size=5)
   #ggtitle("D\n") + theme(plot.title=element_text(hjust=0, size=15, face="bold"))
 
@@ -846,7 +850,9 @@ pec_AnkAng_MaxMin <- aes(ymax=pec_AnkAng_Mean_SE$mean + pec_AnkAng_Mean_SE$SE, y
 
 
 pec_AnkAng_Plot <- ggplot(data=pec_AnkAng_Mean_SE, aes(x=stance, y=mean, fill=species, linetype=species))+
-  scale_y_continuous("\nWrist angle (degrees)")+
+  #scale_y_continuous("\nWrist angle (degrees)")+
+  #set Elbow/Knee and Wrist/Ankle to have the same scale
+  scale_y_continuous(name = "\nAnkle angle (°)", limits = c(60, 170))+
   #scale_x_continuous("\nStance (%)\n")+
   scale_x_continuous(element_blank())+
   geom_line(size=1, alpha=0.75)+
@@ -869,8 +875,10 @@ pec_AnkAng_Plot <- ggplot(data=pec_AnkAng_Mean_SE, aes(x=stance, y=mean, fill=sp
   theme(axis.line=element_line(colour="black", linetype="solid"))+ # put black lines for axes
   #theme(legend.position="bottom", legend.direction="horizontal")+
   #theme(plot.title=element_text(size=8))+
-  annotate("text",  x=95, y = 165, label = "Extension", size=5)+
-  annotate("text", label = "Flexion", x = 95, y = 100, size=5)
+  #annotate("text",  x=95, y = 165, label = "Extension", size=5)+
+  annotate("text",  x=95, y = 170, label = "Extension", size=5)+
+  #annotate("text", label = "Flexion", x = 95, y = 100, size=5)
+  annotate("text", label = "Flexion", x = 95, y = 60, size=5)
   #ggtitle("E\n") + theme(plot.title=element_text(hjust=0, size=15, face="bold"))
 
 
@@ -880,7 +888,7 @@ pec_Pitch_MaxMin <- aes(ymax=pec_Pitch_Mean_SE$mean + pec_Pitch_Mean_SE$SE, ymin
 
 
 pec_Pitch_Plot <- ggplot(data=pec_Pitch_Mean_SE, aes(x=stance, y=mean, fill=species, linetype=species))+
-  scale_y_continuous("\nPitch angle (degrees)")+
+  scale_y_continuous("\nPitch angle (°)")+
   #scale_x_continuous("\nStance (%)\n")+
   scale_x_continuous(element_blank())+
   geom_line(size=1, alpha=0.75)+
@@ -919,7 +927,7 @@ propulsor_Yaw_MaxMin <- aes(ymax=propulsor_Yaw_Mean_SE$mean + propulsor_Yaw_Mean
 
 
 propulsor_Yaw_Plot <- ggplot(data=propulsor_Yaw_Mean_SE, aes(x=stance, y=mean, fill=species, linetype=species))+
-  scale_y_continuous("\nYaw (degrees)")+
+  scale_y_continuous("\nYaw (°)")+
   #scale_x_continuous("\nStance (%)\n")+
   scale_x_continuous(element_blank())+
   geom_line(size=1, alpha=0.75)+
@@ -956,7 +964,7 @@ propulsor_AbdAdd_MaxMin <- aes(ymax=propulsor_AbdAdd_Mean_SE$mean + propulsor_Ab
 
 
 propulsor_AbdAdd_Plot <- ggplot(data=propulsor_AbdAdd_Mean_SE, aes(x=stance, y=mean, fill=species, linetype=species))+
-  scale_y_continuous("\nAbduct / Adduct (degrees)")+
+  scale_y_continuous("\nAbduct / Adduct (°)")+
   #scale_x_continuous("\nStance (%)\n")+
   scale_x_continuous(element_blank())+
   geom_line(size=1, alpha=0.75)+
@@ -992,7 +1000,7 @@ propulsor_ProRet_Corr_MaxMin <- aes(ymax=propulsor_ProRet_Corr_Mean_SE$mean + pr
 
 
 propulsor_ProRet_Corr_Plot <- ggplot(data=propulsor_ProRet_Corr_Mean_SE, aes(x=stance, y=mean, fill=species, linetype=species))+
-  scale_y_continuous("\nProtract / Retract (degrees)")+
+  scale_y_continuous("\nProtract / Retract (°)")+
   #scale_x_continuous("\nStance (%)\n")+
   scale_x_continuous(element_blank())+
   geom_line(size=1, alpha=0.75)+
@@ -1027,7 +1035,9 @@ propulsor_KneeAng_MaxMin <- aes(ymax=propulsor_KneeAng_Mean_SE$mean + propulsor_
 
 
 propulsor_KneeAng_Plot <- ggplot(data=propulsor_KneeAng_Mean_SE, aes(x=stance, y=mean, fill=species, linetype=species))+
-  scale_y_continuous("\nKnee angle (degrees)")+
+  #scale_y_continuous("\n'Elbow'/Knee angle (degrees)")+
+  #set Elbow/Knee and Wrist/Ankle to have the same scale
+  scale_y_continuous(name = "\n'Elbow'/Knee angle (°)", limits = c(60, 170))+
   #scale_x_continuous("\nStance (%)\n")+
   scale_x_continuous(element_blank())+
   geom_line(size=1, alpha=0.75)+
@@ -1050,8 +1060,8 @@ propulsor_KneeAng_Plot <- ggplot(data=propulsor_KneeAng_Mean_SE, aes(x=stance, y
   theme(axis.line=element_line(colour="black", linetype="solid"))+ # put black lines for axes
   #theme(legend.position="bottom", legend.direction="horizontal")+
   #theme(plot.title=element_text(size=8))+
-  annotate("text",  x=95, y = 160, label = "Extension", size=5)+
-  annotate("text", label = "Flexion", x = 95, y = 80, size=5)
+  annotate("text",  x=95, y = 170, label = "Extension", size=5)+
+  annotate("text", label = "Flexion", x = 95, y = 60, size=5)
   #ggtitle("D\n") + theme(plot.title=element_text(hjust=0, size=15, face="bold"))
 
 
@@ -1061,7 +1071,9 @@ propulsor_AnkAng_MaxMin <- aes(ymax=propulsor_AnkAng_Mean_SE$mean + propulsor_An
 
 
 propulsor_AnkAng_Plot <- ggplot(data=propulsor_AnkAng_Mean_SE, aes(x=stance, y=mean, fill=species, linetype=species))+
-  scale_y_continuous("\nAnkle angle (degrees)")+
+  #scale_y_continuous("\n'Elbow'/Knee angle (degrees)")+
+  #set Elbow/Knee and Wrist/Ankle to have the same scale
+  scale_y_continuous(name = "\n'Wrist'/Ankle angle (°)", limits = c(60, 170))+
   #scale_x_continuous("\nStance (%)\n")+
   scale_x_continuous(element_blank())+
   geom_line(size=1, alpha=0.75)+
@@ -1084,7 +1096,7 @@ propulsor_AnkAng_Plot <- ggplot(data=propulsor_AnkAng_Mean_SE, aes(x=stance, y=m
   theme(axis.line=element_line(colour="black", linetype="solid"))+ # put black lines for axes
   #theme(legend.position="bottom", legend.direction="horizontal")+
   #theme(plot.title=element_text(size=8))+
-  annotate("text",  x=95, y = 165, label = "Extension", size=5)+
+  annotate("text",  x=95, y = 170, label = "Extension", size=5)+
   annotate("text", label = "Flexion", x = 95, y = 60, size=5)
   #ggtitle("E\n") + theme(plot.title=element_text(hjust=0, size=15, face="bold"))
 
@@ -1095,7 +1107,7 @@ propulsor_Pitch_MaxMin <- aes(ymax=propulsor_Pitch_Mean_SE$mean + propulsor_Pitc
 
 
 propulsor_Pitch_Plot <- ggplot(data=propulsor_Pitch_Mean_SE, aes(x=stance, y=mean, fill=species, linetype=species))+
-  scale_y_continuous("\nPitch angle (degrees)")+
+  scale_y_continuous("\nPitch angle (°)")+
   #scale_x_continuous("\nStance (%)\n")+
   scale_x_continuous(element_blank())+
   geom_line(size=1, alpha=0.75)+
@@ -1134,7 +1146,7 @@ limb_Yaw_MaxMin <- aes(ymax=limb_Yaw_Mean_SE$mean + limb_Yaw_Mean_SE$SE, ymin=li
 
 
 limb_Yaw_Plot <- ggplot(data=limb_Yaw_Mean_SE, aes(x=stance, y=mean, fill=type, linetype=type))+
-  scale_y_continuous("\nYaw (degrees)")+
+  scale_y_continuous("\nYaw (°)")+
   #scale_x_continuous("\nStance (%)\n")+
   scale_x_continuous(element_blank())+
   geom_line(size=1, alpha=0.75)+
@@ -1173,7 +1185,7 @@ limb_Pitch_MaxMin <- aes(ymax=limb_Pitch_Mean_SE$mean + limb_Pitch_Mean_SE$SE, y
 
 
 limb_Pitch_Plot <- ggplot(data=limb_Pitch_Mean_SE, aes(x=stance, y=mean, fill=type, linetype=type))+
-  scale_y_continuous("\nPitch angle (degrees)")+
+  scale_y_continuous("\nPitch angle (°)")+
   #scale_x_continuous("\nStance (%)\n")+
   scale_x_continuous(element_blank())+
   geom_line(size=1, alpha=0.75)+
