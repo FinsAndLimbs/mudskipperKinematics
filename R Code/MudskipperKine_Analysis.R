@@ -1,13 +1,13 @@
 ################################################################################
 ##                    Analyzing mudskipper kinematics on land                 ##
-##                                    Sept. 9, 2020                           ##
+##                                    Sept. 24, 2021                          ##
 ##                                                                            ##
 ################################################################################
 
 ##TODO:
-##1) @Zach Fix singularity issues with lmers (Especially Tmax/Tmin)
-##2) @Zach Just leave in the joint angle stats section. Clean it up and make it 
-##         pretty once the ms is written
+##1) @Zach Clean up duplicate code (i.e. lmer stuff)
+##2) @Zach Remove or explain code that's currently commented out
+##3) @Zach Once code looks good make sure comments are thorough
 
 
 ## Note: terminology may still reflect salamander anatomy for convenience
@@ -25,9 +25,19 @@ SaveDate <- format(today, format="%y%m%d")
 
 #### STEP 1: LOAD LIBRARIES ####
 
-## install libraries
+## Install libraries if needed:
 #install.packages("devtools")
+#install.packages("ggplot2")
+#install.packages("sciplot)
+#install.packages("pspline")
+#install.packages("signal")
+#install.packages("cowplot")
+#install.packages("grid")
+#install.packages("gridExtra")
+#install.packages("lme4")
 #install.packages("performance")
+#install.packages("emmeans")
+
 
 ## load libraries
 library(devtools)    # for install_github()
@@ -43,18 +53,14 @@ library(performance) # for r2_xu()
 library(emmeans)     # for emmeans() and pairs()
 
 ## use devtools to load the kraken repo from GitHub
-?install_github # loads the help file for this function
 install_github("MorphoFun/kraken", dependencies = TRUE)
+#?install_github # loads the help file for this function
 
-
-## Now load the kraken repo as a library, so we can use the functions in my repo
+## Now load the kraken repo as a library, so we can use the repo functions
 library(kraken)
 
 ## list all functions and datasets within a package
 ls("package:kraken")
-
-percentStance <- seq(0,100,1)
-Stance5 <- seq(1,101,5)
 
 
 #### STEP 2: LOAD XY DATA ####
@@ -72,7 +78,6 @@ Trial <- list(substring(basename(xy_list), 1, 8))
 Group <- list(substring(basename(xy_list), 10, 12))
 
 # Getting data
-
 Pb_RawFiles <- array(lapply(xy_list, read.csv, header=T), dimnames=Trial)
 for (i in 1:length(Pb_RawFiles)) {
   colnames(Pb_RawFiles[[i]]) <- c("ToeTip_X", "ToeTip_Y", "KneeElbow_X", "KneeElbow_Y", "HipShoulder_X", "HipShoulder_Y",
@@ -85,7 +90,7 @@ Pb_RawFiles_d <- Pb_RawFiles[which(substring(names(Pb_RawFiles), 8,8)=="d")]
 Pb_RawFiles_l <- Pb_RawFiles[which(substring(names(Pb_RawFiles), 8,8)=="l")]
 
 
-## The order of the points in the xypts.csv mudskipper output from DTLdataviewer is: 
+## The order of the points in the xypts.csv mudskipper output from DLTdataviewer is: 
 # 1. tip of pectoral fin
 # 2. middle of "elbow" (intra-fin joint)
 # 3. shoulder
@@ -111,7 +116,7 @@ Pb_RawFiles_l <- Pb_RawFiles[which(substring(names(Pb_RawFiles), 8,8)=="l")]
 ## We'll use the kraken::smootheR() function to use a spline-based method with custom smoothing parameters
 ## The custom smoothing parameters are obtained by digitizing a file 3x and then taking the variance between these attempts
 ## That tells you how variable the digitizing was for each point, so the smoothing function can correct accordingly
-?smootheR
+#?smootheR #load help file for this function
 
 ## Calculating our custom smoothing parameters
 # We'll calculate custom smoothing parameters from our repeatability efforts
@@ -216,6 +221,7 @@ lapply(1:length(Pb_smooth_d_interp), FUN = function(x) write.table(data.frame(Pb
 lapply(1:length(Pb_smooth_l_interp), FUN = function(x) write.table(data.frame(Pb_smooth_l_interp[[x]]), file = paste(SmoothInterpPath, "/", names(Pb_smooth_l_interp[x]), "_Smooth_101.txt", sep = ""), sep = "\t", row.names = FALSE))
 
 
+
 #### STEP 5a: CALCULATE KINEMATIC DATA - Pb ####
 
 ## Now read in the Periophthalmus barbarus kinematic data
@@ -237,6 +243,9 @@ pb_kin_group <- list(substring(pb_kin_filenames, 9, 11))
 
 # Getting data
 kinFiles_pb <- array(lapply(pb_kin_list, read.delim, header=T), dimnames=pb_kin_trial)
+
+#initialize column names for stance percentages
+percentStance <- seq(0,100,1)
 
 ## pb - Yaw angle 
 pb_Yaw <- rep(NA, length(kinFiles_pb))
@@ -514,6 +523,8 @@ at_pel_Pitch_Combined[,1:101] <- at_pel_Pitch_Combined[,1:101]-90
 
 
 #### STEP 6a: SUMMARIZING DATA - Pb ####
+
+Stance5 <- seq(1,101,5) #initializes 
 
 ##  pb - Yaw 
 pb_Yaw_Mean  <- sapply(pb_Yaw_Combined[,c(1:101)], FUN=function(x) mean(x, na.rm=TRUE))
@@ -852,7 +863,7 @@ pec_AnkAng_MaxMin <- aes(ymax=pec_AnkAng_Mean_SE$mean + pec_AnkAng_Mean_SE$SE, y
 pec_AnkAng_Plot <- ggplot(data=pec_AnkAng_Mean_SE, aes(x=stance, y=mean, fill=species, linetype=species))+
   #scale_y_continuous("\nWrist angle (degrees)")+
   #set Elbow/Knee and Wrist/Ankle to have the same scale
-  scale_y_continuous(name = "\nAnkle angle (°)", limits = c(60, 170))+
+  scale_y_continuous(name = "\nWrist angle (°)", limits = c(60, 170))+
   #scale_x_continuous("\nStance (%)\n")+
   scale_x_continuous(element_blank())+
   geom_line(size=1, alpha=0.75)+
@@ -964,7 +975,7 @@ propulsor_AbdAdd_MaxMin <- aes(ymax=propulsor_AbdAdd_Mean_SE$mean + propulsor_Ab
 
 
 propulsor_AbdAdd_Plot <- ggplot(data=propulsor_AbdAdd_Mean_SE, aes(x=stance, y=mean, fill=species, linetype=species))+
-  scale_y_continuous("\nAbduct / Adduct (°)")+
+  scale_y_continuous(name = "\nAbduct / Adduct (°)", limits = c(-65, 0))+
   #scale_x_continuous("\nStance (%)\n")+
   scale_x_continuous(element_blank())+
   geom_line(size=1, alpha=0.75)+
@@ -988,7 +999,7 @@ propulsor_AbdAdd_Plot <- ggplot(data=propulsor_AbdAdd_Mean_SE, aes(x=stance, y=m
   #theme(legend.position="bottom", legend.direction="horizontal")+
   #theme(plot.title=element_text(size=8))+
   annotate("text",  x=95, y = 0, label = "Abduction", size=5)+
-  annotate("text", label = "Adduction", x = 95, y = -60, size=5)
+  annotate("text", label = "Adduction", x = 95, y = -65, size=5)
   #ggtitle("B\n") + theme(plot.title=element_text(hjust=0, size=15, face="bold"))
 
 
