@@ -209,7 +209,7 @@ Pb_smoothed_l <- lapply(Pb_RawFiles_l, FUN = function(x) smootheR(x, method = 1,
 ## We can interpolate the frames to 101 points, so they represent 1%, from 0 to 100% of stance
 ## 
 ## we'll use the kraken::interpolater() function for this
-?interpolateR
+#?interpolateR
 
 Pb_smooth_d_interp <- lapply(Pb_smoothed_d, FUN = function(x) interpolateR(x, 101))
 Pb_smooth_l_interp <- lapply(Pb_smoothed_l, FUN = function(x) interpolateR(x, 101))
